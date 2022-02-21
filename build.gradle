@@ -1,0 +1,26 @@
+plugins {
+	id 'org.springframework.boot' version '2.7.0-M1'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+}
+
+group = 'dev.platinum'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+repositories {
+	mavenCentral()
+	maven { url 'https://repo.spring.io/milestone' }
+}
+
+dependencies {
+	implementation 'com.graphql-java:graphql-java:17.3'
+	implementation 'com.graphql-java:graphql-java-spring-boot-starter-webmvc:2.0'
+	implementation 'com.google.guava:guava:31.0.1-jre'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

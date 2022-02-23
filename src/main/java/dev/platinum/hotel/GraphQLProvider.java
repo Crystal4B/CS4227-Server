@@ -36,6 +36,8 @@ public class GraphQLProvider
 		String sdl = Resources.toString(url, Charset.defaultCharset());
 		GraphQLSchema graphQLSchema = buildSchema(sdl);
 		this.graphQL = GraphQL.newGraphQL(graphQLSchema).build();
+
+		Store.init();
 	}
 
 	@Autowired
@@ -53,9 +55,9 @@ public class GraphQLProvider
 	{
 		return RuntimeWiring.newRuntimeWiring()
 				.type(newTypeWiring("Query")
-						.dataFetcher("bookById", graphQLDataFetchers.getBookByIdDataFetcher()))
-				.type(newTypeWiring("Book")
-						.dataFetcher("author", graphQLDataFetchers.getAuthorDataFetcher()))
+						.dataFetcher("bookById", graphQLDataFetchers.getReservationByIDataFetcher()))
+				.type(newTypeWiring("Mutation")
+						.dataFetcher("createReservation", graphQLDataFetchers.createReservation()))
 				.build();
 	}
 }

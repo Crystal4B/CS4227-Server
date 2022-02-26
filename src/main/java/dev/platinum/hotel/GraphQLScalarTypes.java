@@ -1,6 +1,6 @@
 package dev.platinum.hotel;
 
-import java.time.LocalDate;
+import java.sql.Timestamp;
 import java.time.format.DateTimeParseException;
 
 import graphql.language.StringValue;
@@ -10,33 +10,37 @@ import graphql.schema.CoercingParseValueException;
 import graphql.schema.CoercingSerializeException;
 import graphql.schema.GraphQLScalarType;
 
+/**
+ * The GraphQLScalarTypes class for initializing GraphQL Scalar Types
+ * @author Marcin Sęk
+ */
 public class GraphQLScalarTypes
 {
 	public static final GraphQLScalarType createDateScalar()
 	{
 		return GraphQLScalarType.newScalar()
 			.name("Date")
-			.description("Java LocalDate as scalar")
-			.coercing(new Coercing<LocalDate,String>()
+			.description("Java SQL Timestamp as scalar")
+			.coercing(new Coercing<Timestamp,String>()
 			{
 				@Override
 				public String serialize(Object dataFetcherResult)
 				{
-					if (dataFetcherResult instanceof LocalDate)
+					if (dataFetcherResult instanceof Timestamp)
 					{
 						return dataFetcherResult.toString();
 					}
-					throw new CoercingSerializeException("Expected a LocalDate object.");
+					throw new CoercingSerializeException("Expected a Date object.");
 				}
 
 				@Override
-				public LocalDate parseValue(Object input)
+				public Timestamp parseValue(Object input)
 				{
 					try
 					{
 						if (input instanceof String)
 						{
-							return LocalDate.parse((String) input);
+							return Timestamp.valueOf((String) input);
 						}
 						throw new CoercingParseValueException("Expected a String");
 					}
@@ -48,13 +52,13 @@ public class GraphQLScalarTypes
 				}
 
 				@Override
-				public LocalDate parseLiteral(Object input)
+				public Timestamp parseLiteral(Object input)
 				{
 					try
 					{
 						if (input instanceof StringValue)
 						{
-							return LocalDate.parse(((StringValue) input).getValue());
+							return Timestamp.valueOf(((StringValue) input).getValue());
 						}
 						throw new CoercingParseLiteralException("Expected a StringValue.");
 					}

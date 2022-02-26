@@ -2,7 +2,6 @@ package dev.platinum.hotel;
 
 import com.google.common.io.Resources;
 import graphql.GraphQL;
-import graphql.schema.GraphQLScalarType;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaGenerator;
@@ -19,6 +18,10 @@ import java.nio.charset.Charset;
 
 import static graphql.schema.idl.TypeRuntimeWiring.newTypeWiring;
 
+/**
+ * The GraphQLProvider class for initializing GraphQL
+ * @author Marcin Sęk
+ */
 @Component
 public class GraphQLProvider
 {
@@ -37,8 +40,6 @@ public class GraphQLProvider
 		String sdl = Resources.toString(url, Charset.defaultCharset());
 		GraphQLSchema graphQLSchema = buildSchema(sdl);
 		this.graphQL = GraphQL.newGraphQL(graphQLSchema).build();
-
-		Store.init();
 	}
 
 	@Autowired

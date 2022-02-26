@@ -1,16 +1,13 @@
 package dev.platinum.hotel;
 
-import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDate;
+import java.sql.Timestamp;
 
-import com.google.common.io.Resources;
+import com.ibm.icu.text.SimpleDateFormat;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -29,14 +26,12 @@ public class Store
 	{
 		try
 		{
-			URL url = Resources.getResource("database.db");
-			String path = new File(url.toURI()).getAbsolutePath();
-	
 			DriverManager.registerDriver(new org.sqlite.JDBC());
-			connection = DriverManager.getConnection("jdbc:sqlite:" + path);
+			connection = DriverManager.getConnection("jdbc:sqlite:db.sqlite");
+			connection.setAutoCommit(false);
 			createTables();
 		}
-		catch(URISyntaxException | SQLException e)
+		catch(SQLException e)
 		{
 			System.out.println(e.toString());
 		}
@@ -50,13 +45,13 @@ public class Store
 		try
 		{
 			Statement statement = connection.createStatement();
-			String reservationTable = "CREATE TABLE IF NOT EXISTS reservations(id INT PRIMARY KEY, reservation_date DATETIME, arrival_date DATETIME, departure_date DATETIME, number_of_occupants INT, room_ids TEXT)"; // Room_ids as text in format "id,id,id"
-			String roomTable = "CREATE TABLE IF NOT EXISTS rooms(id INT PRIMARY KEY, rate INT)";
+			String reservationTable = "CREATE TABLE IF NOT EXISTS reservations(id INTEGER PRIMARY KEY AUTOINCREMENT, reservation_date DATETIME, arrival_date DATETIME, departure_date DATETIME, number_of_occupants INT, room_ids TEXT)"; // Room_ids as text in format "id,id,id"
+			String roomTable = "CREATE TABLE IF NOT EXISTS rooms(id INTEGER PRIMARY KEY AUTOINCREMENT, rate INT)";
 	
 			statement.addBatch(reservationTable);
 			statement.addBatch(roomTable);
 			statement.executeBatch();
-	
+
 			connection.commit();
 		}
 		catch(SQLException e)
@@ -65,14 +60,26 @@ public class Store
 		}
 	}
 
-	public static Object selectReservationById(String reservationId)
+	public static Reservation selectReservationById(String reservationId)
 	{
 		try
 		{
 			Statement statement = connection.createStatement();
 			String selectReservation = String.format("SELECT * FROM reservations WHERE id = %s", reservationId);
 			ResultSet results = statement.executeQuery(selectReservation);
-			System.out.println(results.toString());
+			if (results.next())
+			{
+				String id = String.valueOf(results.getInt("id"));
+				// results.getTimestamp("column_name") returns 1970-01-01
+				Timestamp reservationDate = Timestamp.valueOf((String) results.getObject("reservation_date"));
+				Timestamp arrivalDate = Timestamp.valueOf((String) results.getObject("arrival_date"));
+				Timestamp departureDate = Timestamp.valueOf((String) results.getObject("departure_date"));
+				int numberOfOccupants = results.getInt("number_of_occupants");
+
+				Reservation reservation = new Reservation(id, reservationDate, arrivalDate, departureDate, numberOfOccupants);
+				
+				return reservation;
+			}
 		}
 		catch (SQLException e)
 		{
@@ -81,22 +88,29 @@ public class Store
 		return null;
 	}
 
-	public static int insertReservation(LocalDate reservationDate, LocalDate arrivalDate, LocalDate departureDate, int numberOfOccupants)
+	public static Reservation insertReservation(Reservation incomingReservation)
 	{
 		try
 		{
-			Statement statement = connection.createStatement();
-			String insertReservation = String.format("INSERT INTO reservations(reservation_date, arrival_date, departure_date, number_of_occupants) VALUES(%s, %s, %s, %d)", reservationDate
-			, arrivalDate, departureDate, numberOfOccupants);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-			statement.executeUpdate(insertReservation, Statement.RETURN_GENERATED_KEYS);
+			Statement statement = connection.createStatement();
+			String insertReservation = String.format("INSERT INTO reservations(reservation_date, arrival_date, departure_date, number_of_occupants) VALUES('%s', '%s', '%s', %d)", sdf.format(incomingReservation.getReservationDate()), sdf.format(incomingReservation.arrivalDate()), sdf.format(incomingReservation.departureDate()), incomingReservation.numberOfOccupants());
+
+			statement.execute(insertReservation);
+			connection.commit();
+
 			ResultSet keys = statement.getGeneratedKeys();
-			System.out.println(keys);
+			if (keys.next())
+			{
+				incomingReservation.setId(String.valueOf(keys.getLong(1)));
+				return incomingReservation;
+			}
 		}
 		catch (SQLException e)
 		{
 			System.out.println(e);
 		}
-		return 1;
+		return null;
 	}
 }

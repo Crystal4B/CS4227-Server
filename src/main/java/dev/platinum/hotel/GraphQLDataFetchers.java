@@ -1,39 +1,41 @@
 package dev.platinum.hotel;
 
-import org.apache.tomcat.jni.Local;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetcher;
 
-import java.time.LocalDate;
+import java.sql.Timestamp;
 import java.util.Map;
 
+/**
+ * The GraphQLDataFetchers class for handling incoming requests
+ * @author Marcin Sęk
+ */
 @Component
 public class GraphQLDataFetchers
 {
-	public DataFetcher getReservationByIDataFetcher()
+	public DataFetcher<Reservation> getReservationByIDataFetcher()
 	{
 		return dataFetchingEnvironment -> {
-			LocalDate date = LocalDate.now();
-			System.out.println(date.toString());
 			String reservationId = dataFetchingEnvironment.getArgument("id");
 			return Store.selectReservationById(reservationId.toString());
 		};
 	}
 
-	public DataFetcher createReservation()
+	public DataFetcher<Reservation> createReservation()
 	{
 		return dataFetchingEnvironment -> {
 			// GraphQL converst object arguments into Maps
 			Map<String, Object> data = dataFetchingEnvironment.getArgument("input");
-			LocalDate reservationDate = (LocalDate) data.get("reservationDate");
-			LocalDate arrivalDate = (LocalDate) data.get("arrivalDate");
-			LocalDate departureDate = (LocalDate) data.get("departureDate");
+			Timestamp reservationDate = (Timestamp) data.get("reservationDate");
+			Timestamp arrivalDate = (Timestamp) data.get("arrivalDate");
+			Timestamp departureDate = (Timestamp) data.get("departureDate");
 			int numberOfOccupants = (int) data.get("numberOfOccupants");
 
+			Reservation incomingReservation = new Reservation(reservationDate, arrivalDate, departureDate, numberOfOccupants);
+
 			// Generate Reservation Object
-			int id = Store.insertReservation(reservationDate, arrivalDate, departureDate, numberOfOccupants);
-			return id;
+			return Store.insertReservation(incomingReservation);
 		};
 	}
 }

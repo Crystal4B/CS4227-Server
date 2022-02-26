@@ -18,6 +18,10 @@ import java.nio.charset.Charset;
 
 import static graphql.schema.idl.TypeRuntimeWiring.newTypeWiring;
 
+/**
+ * The GraphQLProvider class for initializing GraphQL
+ * @author Marcin Sęk
+ */
 @Component
 public class GraphQLProvider
 {
@@ -53,9 +57,10 @@ public class GraphQLProvider
 	{
 		return RuntimeWiring.newRuntimeWiring()
 				.type(newTypeWiring("Query")
-						.dataFetcher("bookById", graphQLDataFetchers.getBookByIdDataFetcher()))
-				.type(newTypeWiring("Book")
-						.dataFetcher("author", graphQLDataFetchers.getAuthorDataFetcher()))
+						.dataFetcher("reservationById", graphQLDataFetchers.getReservationByIDataFetcher()))
+				.type(newTypeWiring("Mutation")
+						.dataFetcher("createReservation", graphQLDataFetchers.createReservation()))
+				.scalar(GraphQLScalarTypes.createDateScalar())
 				.build();
 	}
 }

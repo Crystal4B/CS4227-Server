@@ -31,7 +31,8 @@ public class Store
 			URL url = Resources.getResource("database.db");
 			String path = new File(url.toURI()).getAbsolutePath();
 	
-			connection = DriverManager.getConnection(path);
+			DriverManager.registerDriver(new org.sqlite.JDBC());
+			connection = DriverManager.getConnection("jdbc:sqlite:" + path);
 			createTables();
 		}
 		catch(URISyntaxException | SQLException e)

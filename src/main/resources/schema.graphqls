@@ -7,22 +7,14 @@ type Reservation
 	arrivalDate: Date!
 	departureDate: Date!
 	numberOfOccupants: Int!
-	rooms: [Room]!
 }
 
-type Room
-{
-	id: ID!
-	rate: Int
-}
-
-type ReservationInput
+input ReservationInput
 {
 	reservationDate: Date!
 	arrivalDate: Date!
 	departureDate: Date!
 	numberOfOccupants: Int!
-	rooms: [Room]!
 }
 
 type Query

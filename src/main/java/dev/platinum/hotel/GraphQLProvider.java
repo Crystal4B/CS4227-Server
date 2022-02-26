@@ -2,6 +2,7 @@ package dev.platinum.hotel;
 
 import com.google.common.io.Resources;
 import graphql.GraphQL;
+import graphql.schema.GraphQLScalarType;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaGenerator;
@@ -55,9 +56,10 @@ public class GraphQLProvider
 	{
 		return RuntimeWiring.newRuntimeWiring()
 				.type(newTypeWiring("Query")
-						.dataFetcher("bookById", graphQLDataFetchers.getReservationByIDataFetcher()))
+						.dataFetcher("reservationById", graphQLDataFetchers.getReservationByIDataFetcher()))
 				.type(newTypeWiring("Mutation")
 						.dataFetcher("createReservation", graphQLDataFetchers.createReservation()))
+				.scalar(GraphQLScalarTypes.createDateScalar())
 				.build();
 	}
 }

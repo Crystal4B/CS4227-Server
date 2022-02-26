@@ -8,22 +8,22 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Map;
-import java.util.TreeMap;
 
 import com.google.common.io.Resources;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
 /**
  * The store class is made for managing the data being stored on the server
  * @author Marcin Sęk
  */
+@Component
 public class Store
 {
 	private static Connection connection;
 	
-	/**
-	 * Function for initialising the Store
-	 */
+	@Bean
 	public static void init()
 	{
 		try
@@ -63,8 +63,19 @@ public class Store
 		}
 	}
 
-	public static Object selectReservationById(int reservationId)
+	public static Object selectReservationById(String reservationId)
 	{
+		try
+		{
+			Statement statement = connection.createStatement();
+			String selectReservation = String.format("SELECT * FROM reservations WHERE id = %d", reservationId);
+			ResultSet results = statement.executeQuery(selectReservation);
+			System.out.println(results.toString());
+		}
+		catch (SQLException e)
+		{
+			System.out.println(e);
+		}
 		return null;
 	}
 

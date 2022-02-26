@@ -1,13 +1,9 @@
 package dev.platinum.hotel;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetcher;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 @Component
@@ -16,7 +12,7 @@ public class GraphQLDataFetchers
 	public DataFetcher getReservationByIDataFetcher()
 	{
 		return dataFetchingEnvironment -> {
-			int reservationId = dataFetchingEnvironment.getArgument("id");
+			String reservationId = dataFetchingEnvironment.getArgument("id");
 			return Store.selectReservationById(reservationId);
 		};
 	}

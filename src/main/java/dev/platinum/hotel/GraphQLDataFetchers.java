@@ -1,9 +1,11 @@
 package dev.platinum.hotel;
 
+import org.apache.tomcat.jni.Local;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetcher;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 @Component
@@ -12,8 +14,10 @@ public class GraphQLDataFetchers
 	public DataFetcher getReservationByIDataFetcher()
 	{
 		return dataFetchingEnvironment -> {
+			LocalDate date = LocalDate.now();
+			System.out.println(date.toString());
 			String reservationId = dataFetchingEnvironment.getArgument("id");
-			return Store.selectReservationById(reservationId);
+			return Store.selectReservationById(reservationId.toString());
 		};
 	}
 
@@ -21,14 +25,14 @@ public class GraphQLDataFetchers
 	{
 		return dataFetchingEnvironment -> {
 			// GraphQL converst object arguments into Maps
-			Map<String, String> reservationDateMap = dataFetchingEnvironment.getArgument("reservationDate");
-			Map<String, String> arrivalDateMap = dataFetchingEnvironment.getArgument("arrivalDate");
-			Map<String, String> departureDateMap = dataFetchingEnvironment.getArgument("departureDate");
-			Map<String, String> numberOfOccupantsMap = dataFetchingEnvironment.getArgument("numberOfOccupants");
-			Map<String, String> roomsMap = dataFetchingEnvironment.getArgument("rooms");
+			Map<String, Object> data = dataFetchingEnvironment.getArgument("input");
+			LocalDate reservationDate = (LocalDate) data.get("reservationDate");
+			LocalDate arrivalDate = (LocalDate) data.get("arrivalDate");
+			LocalDate departureDate = (LocalDate) data.get("departureDate");
+			int numberOfOccupants = (int) data.get("numberOfOccupants");
 
 			// Generate Reservation Object
-			int id = Store.insertReservation();
+			int id = Store.insertReservation(reservationDate, arrivalDate, departureDate, numberOfOccupants);
 			return id;
 		};
 	}

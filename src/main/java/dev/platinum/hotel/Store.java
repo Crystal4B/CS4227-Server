@@ -8,6 +8,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 
 import com.google.common.io.Resources;
 
@@ -49,7 +50,7 @@ public class Store
 		try
 		{
 			Statement statement = connection.createStatement();
-			String reservationTable = "CREATE TABLE IF NOT EXISTS reservations(id INT PRIMARY KEY, reservation_date DATETIME, arrival_date DATETIME, departure_date, number_of_occupants INT, room_ids TEXT)"; // Room_ids as text in format "id,id,id"
+			String reservationTable = "CREATE TABLE IF NOT EXISTS reservations(id INT PRIMARY KEY, reservation_date DATETIME, arrival_date DATETIME, departure_date DATETIME, number_of_occupants INT, room_ids TEXT)"; // Room_ids as text in format "id,id,id"
 			String roomTable = "CREATE TABLE IF NOT EXISTS rooms(id INT PRIMARY KEY, rate INT)";
 	
 			statement.addBatch(reservationTable);
@@ -69,7 +70,7 @@ public class Store
 		try
 		{
 			Statement statement = connection.createStatement();
-			String selectReservation = String.format("SELECT * FROM reservations WHERE id = %d", reservationId);
+			String selectReservation = String.format("SELECT * FROM reservations WHERE id = %s", reservationId);
 			ResultSet results = statement.executeQuery(selectReservation);
 			System.out.println(results.toString());
 		}
@@ -80,8 +81,22 @@ public class Store
 		return null;
 	}
 
-	public static int insertReservation()
+	public static int insertReservation(LocalDate reservationDate, LocalDate arrivalDate, LocalDate departureDate, int numberOfOccupants)
 	{
+		try
+		{
+			Statement statement = connection.createStatement();
+			String insertReservation = String.format("INSERT INTO reservations(reservation_date, arrival_date, departure_date, number_of_occupants) VALUES(%s, %s, %s, %d)", reservationDate
+			, arrivalDate, departureDate, numberOfOccupants);
+
+			statement.executeUpdate(insertReservation, Statement.RETURN_GENERATED_KEYS);
+			ResultSet keys = statement.getGeneratedKeys();
+			System.out.println(keys);
+		}
+		catch (SQLException e)
+		{
+			System.out.println(e);
+		}
 		return 1;
 	}
 }

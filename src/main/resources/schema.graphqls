@@ -2,7 +2,7 @@ scalar Date
 
 type Reservation
 {
-	id: ID!
+	id: ID
 	reservationDate: Date!
 	arrivalDate: Date!
 	departureDate: Date!
@@ -11,10 +11,10 @@ type Reservation
 
 input ReservationInput
 {
-	reservationDate: Date!
-	arrivalDate: Date!
-	departureDate: Date!
-	numberOfOccupants: Int!
+	reservationDate: Date
+	arrivalDate: Date
+	departureDate: Date
+	numberOfOccupants: Int
 }
 
 type Query

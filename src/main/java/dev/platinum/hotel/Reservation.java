@@ -1,6 +1,7 @@
 package dev.platinum.hotel;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 /**
  * The Reservation class for parsing and dispatching reservation queries & mutations
@@ -8,11 +9,12 @@ import java.sql.Timestamp;
  */
 public class Reservation
 {
-	public String id;
-	public Timestamp reservationDate;
-	public Timestamp arrivalDate;
-	public Timestamp departureDate;
-	public int numberOfOccupants;
+	private String id;
+	private Timestamp reservationDate;
+	private Timestamp arrivalDate;
+	private Timestamp departureDate;
+	private int numberOfOccupants;
+	private ArrayList<Room> rooms;
 
 	public Reservation(Timestamp reservationDate, Timestamp arrivalDate, Timestamp departureDate, int numberOfOccupants)
 	{
@@ -26,6 +28,13 @@ public class Reservation
 	{
 		this(reservationDate, arrivalDate, departureDate, numberOfOccupants);
 		this.id = id;
+	}
+
+	public Reservation(String id, Timestamp reservationDate, Timestamp arrivalDate, Timestamp departureDate,
+	int numberOfOccupants, ArrayList<Room> rooms)
+	{
+		this(id, reservationDate, arrivalDate, departureDate, numberOfOccupants);
+		this.rooms = rooms;
 	}
 
 	public String getId()
@@ -53,6 +62,11 @@ public class Reservation
 		return this.numberOfOccupants;
 	}
 
+	public ArrayList<Room> getRooms()
+	{
+		return this.rooms;
+	}
+
 	public void setId(String newId)
 	{
 		this.id = newId;
@@ -76,6 +90,11 @@ public class Reservation
 	public void numberOfOccupants(int newNumber)
 	{
 		this.numberOfOccupants = newNumber;
+	}
+
+	public void setRooms(ArrayList<Room> rooms)
+	{
+		this.rooms = rooms;
 	}
 
 	@Override

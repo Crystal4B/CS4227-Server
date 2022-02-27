@@ -7,22 +7,45 @@ type Reservation
 	arrivalDate: Date!
 	departureDate: Date!
 	numberOfOccupants: Int!
+	rooms: [Room]
+}
+
+type Room
+{
+	id: ID!
+	name: String
+	perks: String
+	numberOfBeds: Int
+	rate: Int
 }
 
 input ReservationInput
 {
-	reservationDate: Date
-	arrivalDate: Date
-	departureDate: Date
-	numberOfOccupants: Int
+	reservationDate: Date # Replace with serverside date
+	arrivalDate: Date!
+	departureDate: Date!
+	numberOfOccupants: Int!
+	rooms: [RoomInput]!
+}
+
+input RoomInput
+{
+	id: ID
+	name: String
+	perks: String
+	numberOfBeds: Int
+	rate: Int
 }
 
 type Query
 {
 	reservationById(id: ID!): Reservation
+	roomById(id: ID!): Room
+	availableRoomsByDates(arrivalDate: Date!, departureDate: Date!): [Room]
 }
 
 type Mutation
 {
 	createReservation(input: ReservationInput): Reservation
+	createRooms(input: [RoomInput]): [Room]
 }

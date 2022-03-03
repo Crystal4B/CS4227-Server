@@ -65,7 +65,7 @@ type Query
 	reservationById(id: ID!): Reservation
 	roomById(id: ID!): Room
 	availableRoomsByDates(arrivalDate: Date!, departureDate: Date!): [Room]
-	loginUser(input: RoginInput): User
+	loginUser(input: LoginInput): User
 }
 
 type Mutation

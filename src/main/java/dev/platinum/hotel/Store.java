@@ -351,9 +351,85 @@ public class Store
 		}
 		catch (SQLException e)
 		{
-			System.out.println(e + " INSERT ");
+			System.out.println(e);
 		}
 
 		return null;
+	}
+
+	public static String deleteUser(User user)
+	{
+		try
+		{
+			String deleteUser = String.format("DELETE FROM users WHERE id='%s'", user.getId());
+
+			Statement statement = connection.createStatement();
+			int rows = statement.executeUpdate(deleteUser);
+
+			if (rows > 0)
+			{
+				return String.format("Successfully removed %d users", rows);
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println(e);
+		}
+
+		return "No user was removed";
+	}
+
+	public static String deleteRooms(ArrayList<Room> rooms)
+	{
+		try
+		{
+			String deleteRooms = "DELETE FROM users WHERE id IN (";
+			for (int i = 0; i < rooms.size(); i++)
+			{
+				Room room = rooms.get(i);
+				deleteRooms += room.getId();
+				if (i < rooms.size() -1)
+				{
+					deleteRooms += ",";
+				}
+			}
+			deleteRooms += ")";
+
+			Statement statement = connection.createStatement();
+			int rows = statement.executeUpdate(deleteRooms);
+
+			if (rows > 0)
+			{
+				return String.format("Successfully removed %d rooms", rows);
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println(e);
+		}
+
+		return "No rooms were removed";
+	}
+
+	public static String deleteReservation(String id)
+	{
+		try
+		{
+			String deleteReservation = String.format("DELETE FROM users WHERE id='%s'", id);
+
+			Statement statement = connection.createStatement();
+			int rows = statement.executeUpdate(deleteReservation);
+
+			if (rows > 0)
+			{
+				return "Successfully removed %d reservations";
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println(e);
+		}
+
+		return "No reservation was removed";
 	}
 }

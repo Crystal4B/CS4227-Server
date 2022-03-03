@@ -8,6 +8,11 @@ public class User
 	private String username;
 	private String password;
 
+	public User(String id)
+	{
+		this.id = id;
+	}
+
 	public User(String email, String password)
 	{
 		this.email = email;

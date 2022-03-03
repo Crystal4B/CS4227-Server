@@ -50,7 +50,7 @@ public class Store
 		{
 			Statement statement = connection.createStatement();
 			String reservationTable = "CREATE TABLE IF NOT EXISTS reservations(id INTEGER PRIMARY KEY AUTOINCREMENT, reservation_date DATETIME, arrival_date DATETIME, departure_date DATETIME, number_of_occupants INT, room_ids TEXT)"; // Room_ids as text in format "id,id,id"
-			String roomTable = "CREATE TABLE IF NOT EXISTS rooms(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, perks TEXT, number_of_beds INT, rate INT)";
+			String roomTable = "CREATE TABLE IF NOT EXISTS rooms(id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT, name TEXT, perks TEXT, number_of_beds INT, rate INT)";
 			String userTable = "CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT NOT NULL, email TEXT NOT NULL, username TEXT NOT NULL, password TEXT NOT NULL)";
 
 			statement.addBatch(reservationTable);
@@ -146,11 +146,12 @@ public class Store
 			while (results.next())
 			{
 				String id = String.valueOf(results.getInt("id"));
+				String type = results.getString("type");
 				String name = results.getString("name");
 				String perks = results.getString("perks");
 				int numberOfBeds = results.getInt("number_of_beds");
 				int rate = results.getInt("rate");
-				rooms.add(new Room(id, name, perks, numberOfBeds, rate));
+				rooms.add(new Room(id, type, name, perks, numberOfBeds, rate));
 			}
 			return rooms;
 		}
@@ -185,12 +186,13 @@ public class Store
 			while (results.next())
 			{
 				String id = String.valueOf(results.getInt("id"));
+				String type = results.getString("type");
 				String name = results.getString("name");
 				String perks = results.getString("perks");
 				int numberOfBeds = results.getInt("number_of_beds");
 				int rate = results.getInt("rate");
 
-				availableRooms.add(new Room(id, name, perks, numberOfBeds, rate));
+				availableRooms.add(new Room(id, type, name, perks, numberOfBeds, rate));
 			}
 			return availableRooms;
 		}
@@ -304,7 +306,7 @@ public class Store
 			for (int i = 0; i < rooms.size(); i++)
 			{
 				Room room = rooms.get(i);
-				String insertRooms = String.format("INSERT INTO 'rooms'('name', 'perks', 'number_of_beds', 'rate') VALUES('%s', '%s', %d, %d)", room.getName(), room.getPerks(), room.getNumberOfBeds(), room.getRate());
+				String insertRooms = String.format("INSERT INTO 'rooms'('type', 'name', 'perks', 'number_of_beds', 'rate') VALUES('%s', '%s', '%s', %d, %d)", room.getType(), room.getName(), room.getPerks(), room.getNumberOfBeds(), room.getRate());
 				statement.addBatch(insertRooms);
 			}
 

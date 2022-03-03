@@ -22,6 +22,7 @@ type Reservation
 type Room
 {
 	id: ID!
+	type: String
 	name: String
 	perks: String
 	numberOfBeds: Int
@@ -50,6 +51,7 @@ input ReservationInput
 input RoomInput
 {
 	id: ID
+	type: String
 	name: String
 	perks: String
 	numberOfBeds: Int

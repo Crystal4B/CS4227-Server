@@ -82,12 +82,13 @@ public class GraphQLDataFetchers
 			ArrayList<Room> rooms = new ArrayList<>();
 			for (Map<String, Object> map : roomsMap)
 			{
+				String type = (String) map.get("type");
 				String name = (String) map.get("name");
 				String perks = (String) map.get("perks");
 				Integer numberOfBeds = (Integer) map.get("numberOfBeds");
 				Integer rate = (Integer) map.get("rate");
 
-				rooms.add(new Room(name, perks, numberOfBeds, rate));
+				rooms.add(new Room(name, type, perks, numberOfBeds, rate));
 			}
 
 			return Store.insertRooms(rooms);

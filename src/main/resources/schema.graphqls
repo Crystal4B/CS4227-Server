@@ -65,12 +65,12 @@ type Query
 	reservationById(id: ID!): Reservation
 	roomById(id: ID!): Room
 	availableRoomsByDates(arrivalDate: Date!, departureDate: Date!): [Room]
-	loginUser(input: loginInput): User
+	loginUser(input: LoginInput): User
 }
 
 type Mutation
 {
 	createReservation(input: ReservationInput): Reservation
 	createRooms(input: [RoomInput]): [Room]
-	registerUser(input: registrationInput): User
+	registerUser(input: RegistrationInput): User
 }

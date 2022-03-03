@@ -1,5 +1,14 @@
 scalar Date
 
+type User
+{
+	id: ID!
+	type: String
+	email: String
+	username: String
+	password: String
+}
+
 type Reservation
 {
 	id: ID
@@ -17,6 +26,20 @@ type Room
 	perks: String
 	numberOfBeds: Int
 	rate: Int
+}
+
+input loginInput
+{
+	email: String!
+	password: String!
+}
+
+input registrationInput
+{
+	type: String
+	email: String!
+	username: String!
+	password: String!
 }
 
 input ReservationInput
@@ -42,10 +65,12 @@ type Query
 	reservationById(id: ID!): Reservation
 	roomById(id: ID!): Room
 	availableRoomsByDates(arrivalDate: Date!, departureDate: Date!): [Room]
+	loginUser(input: loginInput): User
 }
 
 type Mutation
 {
 	createReservation(input: ReservationInput): Reservation
 	createRooms(input: [RoomInput]): [Room]
+	registerUser(input: registrationInput): User
 }

@@ -1,4 +1,4 @@
-package dev.platinum.hotel;
+package dev.platinum.hotel.types;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;

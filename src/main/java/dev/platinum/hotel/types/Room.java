@@ -1,4 +1,4 @@
-package dev.platinum.hotel;
+package dev.platinum.hotel.types;
 
 public class Room
 {

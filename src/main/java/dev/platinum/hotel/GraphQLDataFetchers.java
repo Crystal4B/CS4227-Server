@@ -2,6 +2,9 @@ package dev.platinum.hotel;
 
 import org.springframework.stereotype.Component;
 
+import dev.platinum.hotel.types.Reservation;
+import dev.platinum.hotel.types.Room;
+import dev.platinum.hotel.types.User;
 import graphql.schema.DataFetcher;
 
 import java.sql.Timestamp;
@@ -82,6 +85,28 @@ public class GraphQLDataFetchers
 
 			// Generate Reservation Object
 			return Store.insertRooms(rooms);
+		};
+	}
+
+	public DataFetcher<User> loginUserDataFetcher()
+	{
+		return dataFetchingEnvironment -> {
+			Map<String, Object> data = dataFetchingEnvironment.getArgument("input");
+			String email = (String) data.get("email");
+			String password = (String) data.get("password");
+			return Store.selectUserByLogin(new User(email, password));
+		};
+	}
+
+	public DataFetcher<User> registerUser()
+	{
+		return dataFetchingEnvironment -> {
+			Map<String, Object> data = dataFetchingEnvironment.getArgument("input");
+			String type = (String) data.get("type");
+			String email = (String) data.get("email");
+			String username = (String) data.get("username");
+			String password = (String) data.get("password");
+			return Store.insertUser(new User(type, email, username, password));
 		};
 	}
 }

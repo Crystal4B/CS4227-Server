@@ -12,6 +12,10 @@ import com.ibm.icu.text.SimpleDateFormat;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import dev.platinum.hotel.types.Reservation;
+import dev.platinum.hotel.types.Room;
+import dev.platinum.hotel.types.User;
+
 /**
  * The store class is made for managing the data being stored on the server
  * @author Marcin Sęk
@@ -47,9 +51,11 @@ public class Store
 			Statement statement = connection.createStatement();
 			String reservationTable = "CREATE TABLE IF NOT EXISTS reservations(id INTEGER PRIMARY KEY AUTOINCREMENT, reservation_date DATETIME, arrival_date DATETIME, departure_date DATETIME, number_of_occupants INT, room_ids TEXT)"; // Room_ids as text in format "id,id,id"
 			String roomTable = "CREATE TABLE IF NOT EXISTS rooms(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, perks TEXT, number_of_beds INT, rate INT)";
-	
+			String userTable = "CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT NOT NULL, email TEXT NOT NULL, username TEXT NOT NULL, password TEXT NOT NULL)";
+
 			statement.addBatch(reservationTable);
 			statement.addBatch(roomTable);
+			statement.addBatch(userTable);
 			statement.executeBatch();
 
 			connection.commit();
@@ -222,8 +228,35 @@ public class Store
 		{
 			System.out.println(e);
 		}
-
 		return rooms;
+	}
+
+	public static User selectUserByLogin(User user)
+	{
+		try
+		{
+			String selectUser = String.format("SELECT id, type, username FROM users WHERE email='%s' AND password='%s'", user.getEmail(), user.getPassword());
+
+			Statement statement = connection.createStatement();
+			ResultSet results = statement.executeQuery(selectUser);
+			if (results.next())
+			{
+				String id = String.valueOf(results.getInt("id"));
+				String type = results.getString("type");
+				String username = results.getString("username");
+
+				user.setId(id);
+				user.setType(type);
+				user.setUsername(username);
+				
+				return user;
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println(e + " SELECT ");
+		}
+		return null;
 	}
 
 	public static Reservation insertReservation(Reservation incomingReservation, ArrayList<Room> rooms2)
@@ -297,6 +330,30 @@ public class Store
 		{
 			System.out.println(e);
 		}
+		return null;
+	}
+
+	public static User insertUser(User user)
+	{
+		try
+		{
+			String insertUser = String.format("INSERT INTO 'users'('type', 'email', 'username', 'password') VALUES('%s', '%s', '%s', '%s')", user.getType(), user.getEmail(), user.getUsername(), user.getPassword());
+
+			Statement statement = connection.createStatement();
+			statement.execute(insertUser);
+
+			ResultSet keys = statement.getGeneratedKeys();
+			if (keys.next())
+			{
+				user.setId(String.valueOf(keys.getLong(1)));
+				return user;
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println(e + " INSERT ");
+		}
+
 		return null;
 	}
 }

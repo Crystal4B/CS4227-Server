@@ -57,9 +57,19 @@ public class GraphQLProvider
 	{
 		return RuntimeWiring.newRuntimeWiring()
 				.type(newTypeWiring("Query")
-						.dataFetcher("reservationById", graphQLDataFetchers.getReservationByIDataFetcher()))
+					.dataFetcher("reservationById", graphQLDataFetchers.getReservationByIdDataFetcher()))
+				.type(newTypeWiring("Query")
+					.dataFetcher("roomById", graphQLDataFetchers.getRoomByIdDataFetcher()))
+				.type(newTypeWiring("Query")
+					.dataFetcher("availableRoomsByDates", graphQLDataFetchers.getAvailableRoomsByDatesDataFetcher()))
+				.type(newTypeWiring("Query")
+					.dataFetcher("loginUser", graphQLDataFetchers.loginUserDataFetcher()))
 				.type(newTypeWiring("Mutation")
-						.dataFetcher("createReservation", graphQLDataFetchers.createReservation()))
+					.dataFetcher("createReservation", graphQLDataFetchers.createReservation()))
+				.type(newTypeWiring("Mutation")
+					.dataFetcher("createRooms", graphQLDataFetchers.createRooms()))
+				.type(newTypeWiring("Mutation")
+					.dataFetcher("registerUser", graphQLDataFetchers.registerUser()))
 				.scalar(GraphQLScalarTypes.createDateScalar())
 				.build();
 	}

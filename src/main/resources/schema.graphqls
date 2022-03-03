@@ -28,13 +28,13 @@ type Room
 	rate: Int
 }
 
-input loginInput
+input LoginInput
 {
 	email: String!
 	password: String!
 }
 
-input registrationInput
+input RegistrationInput
 {
 	type: String
 	email: String!

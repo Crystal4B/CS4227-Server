@@ -11,11 +11,9 @@ type User
 
 type Reservation
 {
-	id: ID
-	reservationDate: Date!
+	id: ID!
 	arrivalDate: Date!
 	departureDate: Date!
-	numberOfOccupants: Int!
 	rooms: [Room]
 }
 
@@ -27,11 +25,12 @@ type Room
 	perks: String
 	numberOfBeds: Int
 	rate: Int
+	occupants: [User]
 }
 
 input UserInput
 {
-	id: String
+	id: ID
 	type: String
 	email: String
 	username: String
@@ -40,11 +39,9 @@ input UserInput
 
 input ReservationInput
 {
-	id: String
-	reservationDate: Date # Replace with serverside date
+	id: ID
 	arrivalDate: Date!
 	departureDate: Date!
-	numberOfOccupants: Int!
 	rooms: [RoomInput]
 }
 
@@ -56,6 +53,7 @@ input RoomInput
 	perks: String
 	numberOfBeds: Int
 	rate: Int
+	occupants: [UserInput]
 }
 
 type Query
@@ -69,9 +67,9 @@ type Query
 type Mutation
 {
 	createReservation(input: ReservationInput): Reservation
-	removeReservation(input: ReservationInput): String
+	removeReservation(input: ReservationInput): Reservation
 	createRooms(input: [RoomInput]): [Room]
-	removeRooms(input: [RoomInput]): String
+	removeRooms(input: [RoomInput]): Room
 	createUser(input: UserInput): User
-	removeUser(input: UserInput): String
+	removeUser(input: UserInput): User
 }

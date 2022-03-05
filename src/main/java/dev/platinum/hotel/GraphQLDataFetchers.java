@@ -57,10 +57,8 @@ public class GraphQLDataFetchers
 	{
 		return dataFetchingEnvironment -> {
 			Map<String, Object> data = dataFetchingEnvironment.getArgument("input");
-			Timestamp reservationDate = (Timestamp) data.get("reservationDate");
 			Timestamp arrivalDate = (Timestamp) data.get("arrivalDate");
 			Timestamp departureDate = (Timestamp) data.get("departureDate");
-			int numberOfOccupants = (int) data.get("numberOfOccupants");
 			ArrayList<Map<String, String>> roomsMap = (ArrayList<Map<String, String>>) data.get("rooms");
 			ArrayList<Room> rooms = new ArrayList<>();
 			for (Map<String, String> map : roomsMap)
@@ -69,9 +67,9 @@ public class GraphQLDataFetchers
 				rooms.add(new Room(id));
 			}
 
-			Reservation incomingReservation = new Reservation(reservationDate, arrivalDate, departureDate, numberOfOccupants);
+			Reservation incomingReservation = new Reservation(arrivalDate, departureDate, rooms);
 
-			return Store.insertReservation(incomingReservation, rooms);
+			return Store.insertReservation(incomingReservation);
 		};
 	}
 
@@ -87,8 +85,15 @@ public class GraphQLDataFetchers
 				String perks = (String) map.get("perks");
 				Integer numberOfBeds = (Integer) map.get("numberOfBeds");
 				Integer rate = (Integer) map.get("rate");
+				ArrayList<Map<String, String>> occupantsMap = (ArrayList<Map<String, String>>) map.get("occupants");
+				ArrayList<User> occupants = new ArrayList<>();
+				for (Map<String, String> userMap : occupantsMap)
+				{
+					String id = userMap.get("id");
+					occupants.add(new User(id));
+				}
 
-				rooms.add(new Room(name, type, perks, numberOfBeds, rate));
+				rooms.add(new Room(name, type, perks, numberOfBeds, rate, occupants));
 			}
 
 			return Store.insertRooms(rooms);
@@ -107,7 +112,7 @@ public class GraphQLDataFetchers
 		};
 	}
 
-	public DataFetcher<String> removeUser()
+	public DataFetcher<User> removeUser()
 	{
 		return dataFetchingEnvironment -> {
 			Map<String, Object> data = dataFetchingEnvironment.getArgument("input");
@@ -116,7 +121,7 @@ public class GraphQLDataFetchers
 		};
 	}
 
-	public DataFetcher<String> removeRooms()
+	public DataFetcher<ArrayList<Room>> removeRooms()
 	{
 		return dataFetchingEnvironment -> {
 			ArrayList<Map<String, Object>> roomsMap = dataFetchingEnvironment.getArgument("input");
@@ -132,7 +137,7 @@ public class GraphQLDataFetchers
 		};
 	}
 
-	public DataFetcher<String> removeReservation()
+	public DataFetcher<Reservation> removeReservation()
 	{
 		return dataFetchingEnvironment -> {
 			Map<String, Object> data = dataFetchingEnvironment.getArgument("input");

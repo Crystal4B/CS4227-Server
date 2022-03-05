@@ -451,7 +451,7 @@ public class Store
 	{
 		try
 		{
-			String deleteRooms = "DELETE FROM users WHERE id IN (";
+			String deleteRooms = "DELETE FROM rooms WHERE id IN (";
 			for (int i = 0; i < rooms.size(); i++)
 			{
 				Room room = rooms.get(i);
@@ -462,8 +462,6 @@ public class Store
 				}
 			}
 			deleteRooms += ") RETURNING *";
-
-			System.out.println(deleteRooms);
 
 			Statement statement = connection.createStatement();
 			ResultSet results = statement.executeQuery(deleteRooms);
@@ -499,7 +497,7 @@ public class Store
 	{
 		try
 		{
-			String deleteReservation = String.format("DELETE FROM users WHERE id='%s' RETURNING *", id);
+			String deleteReservation = String.format("DELETE FROM reservations WHERE id='%s' RETURNING *", id);
 
 			Statement statement = connection.createStatement();
 			ResultSet results = statement.executeQuery(deleteReservation);

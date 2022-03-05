@@ -19,7 +19,7 @@ type Reservation
 
 type Room
 {
-	id: ID!
+	id: ID
 	type: String
 	name: String
 	perks: String

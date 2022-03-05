@@ -455,13 +455,15 @@ public class Store
 			for (int i = 0; i < rooms.size(); i++)
 			{
 				Room room = rooms.get(i);
-				deleteRooms += room.getId();
+				deleteRooms += "'" + room.getId() + "'";
 				if (i < rooms.size() -1)
 				{
 					deleteRooms += ",";
 				}
 			}
 			deleteRooms += ") RETURNING *";
+
+			System.out.println(deleteRooms);
 
 			Statement statement = connection.createStatement();
 			ResultSet results = statement.executeQuery(deleteRooms);

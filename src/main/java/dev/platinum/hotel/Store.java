@@ -32,6 +32,7 @@ public class Store
 		{
 			DriverManager.registerDriver(new org.sqlite.JDBC());
 			connection = DriverManager.getConnection("jdbc:sqlite:db.sqlite");
+			connection.setAutoCommit(false);
 			createTables();
 		}
 		catch(SQLException e)
@@ -56,6 +57,8 @@ public class Store
 			statement.addBatch(roomTable);
 			statement.addBatch(userTable);
 			statement.executeBatch();
+			
+			connection.commit();
 		}
 		catch(SQLException e)
 		{
@@ -322,6 +325,7 @@ public class Store
 			String insertReservation = String.format("INSERT INTO reservations(arrival_date, departure_date, room_ids) VALUES('%s', '%s', '%s')", sdf.format(incomingReservation.arrivalDate()), sdf.format(incomingReservation.departureDate()), roomIds);
 
 			statement.execute(insertReservation);
+			connection.commit();
 
 			ResultSet keys = statement.getGeneratedKeys();
 			if (keys.next())
@@ -363,6 +367,7 @@ public class Store
 			}
 
 			statement.executeBatch();
+			connection.commit();
 
 			// generatedKeys holds last key inserted
 			ResultSet keys = statement.getGeneratedKeys();
@@ -394,6 +399,7 @@ public class Store
 
 			Statement statement = connection.createStatement();
 			statement.execute(insertUser);
+			connection.commit();
 
 			ResultSet keys = statement.getGeneratedKeys();
 			if (keys.next())
@@ -419,14 +425,19 @@ public class Store
 			Statement statement = connection.createStatement();
 			ResultSet results = statement.executeQuery(deleteUser);
 
+			User resultUser = null;
 			if (results.next())
 			{
 				String id = results.getString("id");
 				String type = results.getString("type");
 				String email = results.getString("email");
 
-				return new User(id, type, email);
+				resultUser = new User(id, type, email);
 			}
+			results.close();
+			connection.commit();
+			return resultUser;
+
 		}
 		catch (SQLException e)
 		{
@@ -454,7 +465,7 @@ public class Store
 
 			Statement statement = connection.createStatement();
 			ResultSet results = statement.executeQuery(deleteRooms);
-
+			
 			ArrayList<Room> deletedRooms = new ArrayList<>();
 			while (results.next())
 			{
@@ -469,6 +480,9 @@ public class Store
 				ArrayList<User> occupants = selectUsersByIds(ids);
 				deletedRooms.add(new Room(id, type, name, perks, numberOfBeds, rate, occupants));
 			}
+			results.close();
+			connection.commit();
+
 			return deletedRooms;
 		}
 		catch (SQLException e)
@@ -488,6 +502,7 @@ public class Store
 			Statement statement = connection.createStatement();
 			ResultSet results = statement.executeQuery(deleteReservation);
 			
+			Reservation resultReservation = null;
 			if (results.next())
 			{
 				String deletedId = String.valueOf(results.getInt("id"));
@@ -498,10 +513,12 @@ public class Store
 				String roomIdsArr[] = roomIds.split(",");
 				ArrayList<Room> rooms = selectRoomsByIds(roomIdsArr);
 
-				Reservation reservation = new Reservation(deletedId, arrivalDate, departureDate, rooms);
-				
-				return reservation;
+				resultReservation = new Reservation(deletedId, arrivalDate, departureDate, rooms);
 			}
+			results.close();
+			connection.commit();
+
+			return resultReservation;
 		}
 		catch (SQLException e)
 		{

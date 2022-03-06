@@ -10,41 +10,31 @@ import java.util.ArrayList;
 public class Reservation
 {
 	private String id;
-	private Timestamp reservationDate;
 	private Timestamp arrivalDate;
 	private Timestamp departureDate;
-	private int numberOfOccupants;
 	private ArrayList<Room> rooms;
 
-	public Reservation(Timestamp reservationDate, Timestamp arrivalDate, Timestamp departureDate, int numberOfOccupants)
+	public Reservation(Timestamp arrivalDate, Timestamp departureDate)
 	{
-		this.reservationDate = reservationDate;
 		this.arrivalDate = arrivalDate;
 		this.departureDate = departureDate;
-		this.numberOfOccupants = numberOfOccupants;
 	}
 
-	public Reservation(String id, Timestamp reservationDate, Timestamp arrivalDate, Timestamp departureDate, int numberOfOccupants)
+	public Reservation(Timestamp arrivalDate, Timestamp departureDate, ArrayList<Room> rooms)
 	{
-		this(reservationDate, arrivalDate, departureDate, numberOfOccupants);
-		this.id = id;
-	}
-
-	public Reservation(String id, Timestamp reservationDate, Timestamp arrivalDate, Timestamp departureDate,
-	int numberOfOccupants, ArrayList<Room> rooms)
-	{
-		this(id, reservationDate, arrivalDate, departureDate, numberOfOccupants);
+		this(arrivalDate, departureDate);
 		this.rooms = rooms;
+	}
+
+	public Reservation(String id, Timestamp arrivalDate, Timestamp departureDate, ArrayList<Room> rooms)
+	{
+		this(arrivalDate, departureDate, rooms);
+		this.id = id;
 	}
 
 	public String getId()
 	{
 		return this.id;
-	}
-
-	public Timestamp getReservationDate()
-	{
-		return this.reservationDate;
 	}
 
 	public Timestamp arrivalDate()
@@ -57,11 +47,6 @@ public class Reservation
 		return this.departureDate;
 	}
 
-	public int numberOfOccupants()
-	{
-		return this.numberOfOccupants;
-	}
-
 	public ArrayList<Room> getRooms()
 	{
 		return this.rooms;
@@ -70,11 +55,6 @@ public class Reservation
 	public void setId(String newId)
 	{
 		this.id = newId;
-	}
-
-	public void setReservationDate(Timestamp newDate)
-	{
-		this.reservationDate = newDate;
 	}
 
 	public void arrivalDate(Timestamp newDate)
@@ -87,11 +67,6 @@ public class Reservation
 		this.departureDate = newDate;
 	}
 
-	public void numberOfOccupants(int newNumber)
-	{
-		this.numberOfOccupants = newNumber;
-	}
-
 	public void setRooms(ArrayList<Room> rooms)
 	{
 		this.rooms = rooms;
@@ -100,6 +75,7 @@ public class Reservation
 	@Override
 	public String toString()
 	{
-		return String.format("%s, %s, %s, %s, %d", id, reservationDate, arrivalDate, departureDate, numberOfOccupants);
+		// TODO: Add Rooms to String here
+		return String.format("%s, %s, %s, %s, %d", id, arrivalDate, departureDate);
 	}
 }

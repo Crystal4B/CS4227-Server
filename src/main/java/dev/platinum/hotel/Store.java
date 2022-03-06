@@ -49,15 +49,15 @@ public class Store
 		try
 		{
 			Statement statement = connection.createStatement();
-			String reservationTable = "CREATE TABLE IF NOT EXISTS reservations(id INTEGER PRIMARY KEY AUTOINCREMENT, reservation_date DATETIME, arrival_date DATETIME, departure_date DATETIME, number_of_occupants INT, room_ids TEXT)"; // Room_ids as text in format "id,id,id"
-			String roomTable = "CREATE TABLE IF NOT EXISTS rooms(id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT, name TEXT, perks TEXT, number_of_beds INT, rate INT)";
+			String reservationTable = "CREATE TABLE IF NOT EXISTS reservations(id INTEGER PRIMARY KEY AUTOINCREMENT, arrival_date DATETIME NOT NULL, departure_date DATETIME NOT NULL, room_ids TEXT NOT NULL)"; // Room_ids as text in format "id,id,id"
+			String roomTable = "CREATE TABLE IF NOT EXISTS rooms(id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT NOT NULL, name TEXT NOT NULL, perks TEXT NOT NULL, number_of_beds INT NOT NULL, rate INT NOT NULL, user_ids TEXT NOT NULL)"; // user_ids as text in format "id,id,id"
 			String userTable = "CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT NOT NULL, email TEXT NOT NULL, username TEXT NOT NULL, password TEXT NOT NULL)";
 
 			statement.addBatch(reservationTable);
 			statement.addBatch(roomTable);
 			statement.addBatch(userTable);
 			statement.executeBatch();
-
+			
 			connection.commit();
 		}
 		catch(SQLException e)
@@ -77,15 +77,13 @@ public class Store
 			{
 				String id = String.valueOf(results.getInt("id"));
 				// results.getTimestamp("column_name") returns 1970-01-01
-				Timestamp reservationDate = Timestamp.valueOf((String) results.getObject("reservation_date"));
 				Timestamp arrivalDate = Timestamp.valueOf((String) results.getObject("arrival_date"));
 				Timestamp departureDate = Timestamp.valueOf((String) results.getObject("departure_date"));
-				int numberOfOccupants = results.getInt("number_of_occupants");
 				String roomIds = results.getString("room_ids");
 				String roomIdsArr[] = roomIds.split(",");
 				ArrayList<Room> rooms = selectRoomsByIds(roomIdsArr);
 
-				Reservation reservation = new Reservation(id, reservationDate, arrivalDate, departureDate, numberOfOccupants, rooms);
+				Reservation reservation = new Reservation(id, arrivalDate, departureDate, rooms);
 				
 				return reservation;
 			}
@@ -111,8 +109,11 @@ public class Store
 				String perks = results.getString("perks");
 				int numberOfBeds = results.getInt("number_of_beds");
 				int rate = results.getInt("rate");
+				String userIds = results.getString("user_ids");
+				String ids[] = userIds.split(",");
+				ArrayList<User> occupants = selectUsersByIds(ids);
 
-				Room room = new Room(id, name, perks, numberOfBeds, rate);
+				Room room = new Room(id, name, perks, numberOfBeds, rate, occupants);
 				
 				return room;
 			}
@@ -151,7 +152,10 @@ public class Store
 				String perks = results.getString("perks");
 				int numberOfBeds = results.getInt("number_of_beds");
 				int rate = results.getInt("rate");
-				rooms.add(new Room(id, type, name, perks, numberOfBeds, rate));
+				String userIds = results.getString("user_ids");
+				String ids[] = userIds.split(",");
+				ArrayList<User> occupants = selectUsersByIds(ids);
+				rooms.add(new Room(id, type, name, perks, numberOfBeds, rate, occupants));
 			}
 			return rooms;
 		}
@@ -191,8 +195,11 @@ public class Store
 				String perks = results.getString("perks");
 				int numberOfBeds = results.getInt("number_of_beds");
 				int rate = results.getInt("rate");
+				String userIds = results.getString("user_ids");
+				String ids[] = userIds.split(",");
+				ArrayList<User> occupants = selectUsersByIds(ids);
 
-				availableRooms.add(new Room(id, type, name, perks, numberOfBeds, rate));
+				availableRooms.add(new Room(id, type, name, perks, numberOfBeds, rate, occupants));
 			}
 			return availableRooms;
 		}
@@ -201,6 +208,43 @@ public class Store
 			System.out.println(e);
 		}
 
+		return null;
+	}
+
+	private static ArrayList<User> selectUsersByIds(String[] ids)
+	{
+		try
+		{
+			String selectUsers = "SELECT * FROM users WHERE id IN (";
+			for (int i = 0; i < ids.length; i++)
+			{
+				selectUsers += ids[i];
+				if (i < ids.length -1)
+				{
+					selectUsers += ",";
+				}
+			}
+			selectUsers += ")";
+	
+			Statement statement = connection.createStatement();
+			ResultSet results = statement.executeQuery(selectUsers);
+
+			ArrayList<User> users = new ArrayList<>();
+			while(results.next())
+			{
+				String id = results.getString("id");
+				String type = results.getString("type");
+				String email = results.getString("email");
+
+				users.add(new User(id, type, email));
+			}
+
+			return users;
+		}
+		catch (SQLException e)
+		{
+			System.out.println(e);
+		}
 		return null;
 	}
 
@@ -261,15 +305,15 @@ public class Store
 		return null;
 	}
 
-	public static Reservation insertReservation(Reservation incomingReservation, ArrayList<Room> rooms2)
+	public static Reservation insertReservation(Reservation incomingReservation)
 	{
 		try
 		{
 			String roomIds = "";
-			for (int i = 0; i < rooms2.size(); i++)
+			for (int i = 0; i < incomingReservation.getRooms().size(); i++)
 			{
-				roomIds += rooms2.get(i).getId();
-				if (i < rooms2.size() -1)
+				roomIds += incomingReservation.getRooms().get(i).getId();
+				if (i < incomingReservation.getRooms().size() -1)
 				{
 					roomIds += ",";
 				}
@@ -278,7 +322,7 @@ public class Store
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 			Statement statement = connection.createStatement();
-			String insertReservation = String.format("INSERT INTO reservations(reservation_date, arrival_date, departure_date, number_of_occupants, room_ids) VALUES('%s', '%s', '%s', %d, '%s')", sdf.format(incomingReservation.getReservationDate()), sdf.format(incomingReservation.arrivalDate()), sdf.format(incomingReservation.departureDate()), incomingReservation.numberOfOccupants(), roomIds);
+			String insertReservation = String.format("INSERT INTO reservations(arrival_date, departure_date, room_ids) VALUES('%s', '%s', '%s')", sdf.format(incomingReservation.arrivalDate()), sdf.format(incomingReservation.departureDate()), roomIds);
 
 			statement.execute(insertReservation);
 			connection.commit();
@@ -306,7 +350,19 @@ public class Store
 			for (int i = 0; i < rooms.size(); i++)
 			{
 				Room room = rooms.get(i);
-				String insertRooms = String.format("INSERT INTO 'rooms'('type', 'name', 'perks', 'number_of_beds', 'rate') VALUES('%s', '%s', '%s', %d, %d)", room.getType(), room.getName(), room.getPerks(), room.getNumberOfBeds(), room.getRate());
+				ArrayList<User> occupants = room.getOccupants();
+				String user_ids = "";
+				for (int j = 0; j < occupants.size(); j++)
+				{
+					User occupant = occupants.get(j);
+					user_ids += occupant.getId();
+					if (j < occupants.size()-1)
+					{
+						user_ids += ",";
+					}
+				}
+
+				String insertRooms = String.format("INSERT INTO 'rooms'('type', 'name', 'perks', 'number_of_beds', 'rate', 'user_ids') VALUES('%s', '%s', '%s', %d, %d, '%s')", room.getType(), room.getName(), room.getPerks(), room.getNumberOfBeds(), room.getRate(), user_ids);
 				statement.addBatch(insertRooms);
 			}
 
@@ -343,6 +399,7 @@ public class Store
 
 			Statement statement = connection.createStatement();
 			statement.execute(insertUser);
+			connection.commit();
 
 			ResultSet keys = statement.getGeneratedKeys();
 			if (keys.next())
@@ -359,79 +416,115 @@ public class Store
 		return null;
 	}
 
-	public static String deleteUser(User user)
+	public static User deleteUser(User user)
 	{
 		try
 		{
-			String deleteUser = String.format("DELETE FROM users WHERE id='%s'", user.getId());
+			String deleteUser = String.format("DELETE FROM users WHERE id='%s' RETURNING *", user.getId());
 
 			Statement statement = connection.createStatement();
-			int rows = statement.executeUpdate(deleteUser);
+			ResultSet results = statement.executeQuery(deleteUser);
 
-			if (rows > 0)
+			User resultUser = null;
+			if (results.next())
 			{
-				return String.format("Successfully removed %d users", rows);
+				String id = results.getString("id");
+				String type = results.getString("type");
+				String email = results.getString("email");
+
+				resultUser = new User(id, type, email);
 			}
+			results.close();
+			connection.commit();
+			return resultUser;
+
 		}
 		catch (SQLException e)
 		{
 			System.out.println(e);
 		}
 
-		return "No user was removed";
+		return null;
 	}
 
-	public static String deleteRooms(ArrayList<Room> rooms)
+	public static ArrayList<Room> deleteRooms(ArrayList<Room> rooms)
 	{
 		try
 		{
-			String deleteRooms = "DELETE FROM users WHERE id IN (";
+			String deleteRooms = "DELETE FROM rooms WHERE id IN (";
 			for (int i = 0; i < rooms.size(); i++)
 			{
 				Room room = rooms.get(i);
-				deleteRooms += room.getId();
+				deleteRooms += "'" + room.getId() + "'";
 				if (i < rooms.size() -1)
 				{
 					deleteRooms += ",";
 				}
 			}
-			deleteRooms += ")";
+			deleteRooms += ") RETURNING *";
 
 			Statement statement = connection.createStatement();
-			int rows = statement.executeUpdate(deleteRooms);
-
-			if (rows > 0)
+			ResultSet results = statement.executeQuery(deleteRooms);
+			
+			ArrayList<Room> deletedRooms = new ArrayList<>();
+			while (results.next())
 			{
-				return String.format("Successfully removed %d rooms", rows);
+				String id = String.valueOf(results.getInt("id"));
+				String type = results.getString("type");
+				String name = results.getString("name");
+				String perks = results.getString("perks");
+				int numberOfBeds = results.getInt("number_of_beds");
+				int rate = results.getInt("rate");
+				String userIds = results.getString("user_ids");
+				String ids[] = userIds.split(",");
+				ArrayList<User> occupants = selectUsersByIds(ids);
+				deletedRooms.add(new Room(id, type, name, perks, numberOfBeds, rate, occupants));
 			}
+			results.close();
+			connection.commit();
+
+			return deletedRooms;
 		}
 		catch (SQLException e)
 		{
 			System.out.println(e);
 		}
 
-		return "No rooms were removed";
+		return null;
 	}
 
-	public static String deleteReservation(String id)
+	public static Reservation deleteReservation(String id)
 	{
 		try
 		{
-			String deleteReservation = String.format("DELETE FROM users WHERE id='%s'", id);
+			String deleteReservation = String.format("DELETE FROM reservations WHERE id='%s' RETURNING *", id);
 
 			Statement statement = connection.createStatement();
-			int rows = statement.executeUpdate(deleteReservation);
-
-			if (rows > 0)
+			ResultSet results = statement.executeQuery(deleteReservation);
+			
+			Reservation resultReservation = null;
+			if (results.next())
 			{
-				return "Successfully removed %d reservations";
+				String deletedId = String.valueOf(results.getInt("id"));
+				// results.getTimestamp("column_name") returns 1970-01-01
+				Timestamp arrivalDate = Timestamp.valueOf((String) results.getObject("arrival_date"));
+				Timestamp departureDate = Timestamp.valueOf((String) results.getObject("departure_date"));
+				String roomIds = results.getString("room_ids");
+				String roomIdsArr[] = roomIds.split(",");
+				ArrayList<Room> rooms = selectRoomsByIds(roomIdsArr);
+
+				resultReservation = new Reservation(deletedId, arrivalDate, departureDate, rooms);
 			}
+			results.close();
+			connection.commit();
+
+			return resultReservation;
 		}
 		catch (SQLException e)
 		{
 			System.out.println(e);
 		}
 
-		return "No reservation was removed";
+		return null;
 	}
 }

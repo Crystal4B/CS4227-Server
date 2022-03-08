@@ -18,6 +18,10 @@ import java.util.Map;
 @Component
 public class GraphQLDataFetchers
 {
+	/**
+	 * The DataFetcher handling ReservationById requests
+	 * @return a Reservation Object or null if not found
+	 */
 	public DataFetcher<Reservation> getReservationByIdDataFetcher()
 	{
 		return dataFetchingEnvironment -> {
@@ -26,6 +30,10 @@ public class GraphQLDataFetchers
 		};
 	}
 
+		/**
+	 * The DataFetcher handling RoomById requests
+	 * @return a Room Object or null if not found
+	 */
 	public DataFetcher<Room> getRoomByIdDataFetcher()
 	{
 		return dataFetchingEnvironment -> {
@@ -34,6 +42,10 @@ public class GraphQLDataFetchers
 		};
 	}
 
+	/**
+	 * The DataFetcher handling AvailableRoomsByDates requests
+	 * @return a List of Room Objects or null if not found
+	 */
 	public DataFetcher<ArrayList<Room>> getAvailableRoomsByDatesDataFetcher()
 	{
 		return dataFetchingEnvironment -> {
@@ -43,6 +55,10 @@ public class GraphQLDataFetchers
 		};
 	}
 
+	/**
+	 * The DataFetcher handling loginUser requests
+	 * @return the User Object that has logged in or null if unsuccessful
+	 */
 	public DataFetcher<User> loginUserDataFetcher()
 	{
 		return dataFetchingEnvironment -> {
@@ -53,6 +69,10 @@ public class GraphQLDataFetchers
 		};
 	}
 
+	/**
+	 * The DataFetcher handling createReservations requests
+	 * @return the inserted Reservation Object or null if unsuccessful
+	 */
 	public DataFetcher<Reservation> createReservation()
 	{
 		return dataFetchingEnvironment -> {
@@ -73,6 +93,10 @@ public class GraphQLDataFetchers
 		};
 	}
 
+	/**
+	 * The DataFetcher handling createRooms requests
+	 * @return a list of inserted Room objects or null if unsuccessful
+	 */
 	public DataFetcher<ArrayList<Room>> createRooms()
 	{
 		return dataFetchingEnvironment -> {
@@ -100,6 +124,10 @@ public class GraphQLDataFetchers
 		};
 	}
 
+	/**
+	 * The DataFetcher handling createUser requests
+	 * @return the inserted User object or null if unsuccessful
+	 */
 	public DataFetcher<User> createUser()
 	{
 		return dataFetchingEnvironment -> {
@@ -112,6 +140,10 @@ public class GraphQLDataFetchers
 		};
 	}
 
+	/**
+	 * The DataFetcher handling removeUser requests
+	 * @return the removed User object or null if unsuccessful
+	 */
 	public DataFetcher<User> removeUser()
 	{
 		return dataFetchingEnvironment -> {
@@ -121,6 +153,10 @@ public class GraphQLDataFetchers
 		};
 	}
 
+	/**
+	 * The DataFetcher handling removeRooms requests
+	 * @return a list of removed Room objects or null if unsuccessful
+	 */
 	public DataFetcher<ArrayList<Room>> removeRooms()
 	{
 		return dataFetchingEnvironment -> {
@@ -137,6 +173,10 @@ public class GraphQLDataFetchers
 		};
 	}
 
+	/**
+	 * The DataFetcher handling removeReservation requests
+	 * @return the removed Reservation Object or null if unsuccessful
+	 */
 	public DataFetcher<Reservation> removeReservation()
 	{
 		return dataFetchingEnvironment -> {

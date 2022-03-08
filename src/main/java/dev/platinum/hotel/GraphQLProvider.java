@@ -45,6 +45,11 @@ public class GraphQLProvider
 	@Autowired
 	GraphQLDataFetchers graphQLDataFetchers;
 
+	/**
+	 * Function for creating the GraphQL Schema
+	 * @param sdl the schema in string format
+	 * @return the built GraphQLSchema
+	 */
 	private GraphQLSchema buildSchema(String sdl)
 	{
 		TypeDefinitionRegistry typeRegistry = new SchemaParser().parse(sdl);
@@ -53,6 +58,10 @@ public class GraphQLProvider
 		return schemaGenerator.makeExecutableSchema(typeRegistry, runtimeWiring);
 	}
 
+	/**
+	 * Function for creating the Graph wiring of the schema
+	 * @return the built wiring for the schema
+	 */
 	private RuntimeWiring buildWiring()
 	{
 		return RuntimeWiring.newRuntimeWiring()

@@ -16,6 +16,10 @@ import graphql.schema.GraphQLScalarType;
  */
 public class GraphQLScalarTypes
 {
+	/**
+	 * Function for creating the Date scalar type for the schema
+	 * @return the built scalar type for Date
+	 */
 	public static final GraphQLScalarType createDateScalar()
 	{
 		return GraphQLScalarType.newScalar()

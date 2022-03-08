@@ -25,6 +25,9 @@ public class Store
 {
 	private static Connection connection;
 	
+	/**
+	 * Initialization for the store component
+	 */
 	@Bean
 	public static void init()
 	{
@@ -66,6 +69,11 @@ public class Store
 		}
 	}
 
+	/**
+	 * Function for selecting a Reservation by its id
+	 * @param reservationId the ID of the reservation
+	 * @return a Reservation object if a reservation was found, null otherwise
+	 */
 	public static Reservation selectReservationById(String reservationId)
 	{
 		try
@@ -95,6 +103,11 @@ public class Store
 		return null;
 	}
 
+	/**
+	 * Function for selecting a Room by its id
+	 * @param roomId the ID of the room
+	 * @return a Room object if a room was found, null otherwise
+	 */
 	public static Room selectRoomById(String roomId)
 	{
 		try
@@ -125,6 +138,11 @@ public class Store
 		return null;
 	}
 
+	/**
+	 * Function for selecting multiple Rooms by their ids
+	 * @param roomIdsArr list of room IDs being selected
+	 * @return A list containing all the Room Objects found
+	 */
 	public static ArrayList<Room> selectRoomsByIds(String[] roomIdsArr)
 	{
 		String selectRooms = "SELECT * FROM rooms WHERE id IN(";
@@ -167,6 +185,12 @@ public class Store
 		return null;
 	}
 
+	/**
+	 * Function for selecting all available rooms using a start and end date
+	 * @param selectedArrival The beginning of the range
+	 * @param selectedDeparture The End of the range
+	 * @return A list containing all the Room Objects found
+	 */
 	public static ArrayList<Room> selectAvailableRoomsByDates(Timestamp selectedArrival, Timestamp selectedDeparture)
 	{
 		ArrayList<Room> unavailableRooms = selectUnavailableRoomIdsByDates(selectedArrival, selectedDeparture);
@@ -211,6 +235,11 @@ public class Store
 		return null;
 	}
 
+	/**
+	 * Function for selecting Users by their ids
+	 * @param ids the ids of users being selected
+	 * @return a list containing all the User Objects found
+	 */
 	private static ArrayList<User> selectUsersByIds(String[] ids)
 	{
 		try
@@ -248,6 +277,12 @@ public class Store
 		return null;
 	}
 
+	/**
+	 * Function for selecting all unavailable rooms using a start and end date
+	 * @param selectedArrival The beginning of the range
+	 * @param selectedDeparture The End of the range
+	 * @return A list containing all the Room Objects found
+	 */
 	public static ArrayList<Room> selectUnavailableRoomIdsByDates(Timestamp selectedArrival, Timestamp selectedDeparture)
 	{
 		ArrayList<Room> rooms = new ArrayList<>();
@@ -277,6 +312,11 @@ public class Store
 		return rooms;
 	}
 
+	/**
+	 * Function for selecting a user using its login details
+	 * @param user attempting to login
+	 * @return A User object if one has been found
+	 */
 	public static User selectUserByLogin(User user)
 	{
 		try
@@ -305,6 +345,11 @@ public class Store
 		return null;
 	}
 
+	/**
+	 * Function for inserting a reservation into the system
+	 * @param incomingReservation the Reservation Object being added
+	 * @return A Reservation object with its database ids
+	 */
 	public static Reservation insertReservation(Reservation incomingReservation)
 	{
 		try
@@ -341,6 +386,11 @@ public class Store
 		return null;
 	}
 
+	/**
+	 * Function for inserting rooms into the system
+	 * @param rooms a list of rooms being added to the system
+	 * @return updated list of rooms where all Room objects got their database ids
+	 */
 	public static ArrayList<Room> insertRooms(ArrayList<Room> rooms)
 	{
 		try
@@ -391,6 +441,11 @@ public class Store
 		return null;
 	}
 
+	/**
+	 * Function for adding a user into the system
+	 * @param user the user being added into the system
+	 * @return a updated user object with its database id
+	 */
 	public static User insertUser(User user)
 	{
 		try
@@ -416,6 +471,11 @@ public class Store
 		return null;
 	}
 
+	/**
+	 * Function for removing a user from the system
+	 * @param user the user being removed from the system
+	 * @return the removed user object, or null if unsuccessful
+	 */
 	public static User deleteUser(User user)
 	{
 		try
@@ -447,6 +507,11 @@ public class Store
 		return null;
 	}
 
+	/**
+	 * Function for removing rooms from the system
+	 * @param rooms a list of rooms being removed from the system
+	 * @return the list of removed room objects, or null if unsuccessful
+	 */
 	public static ArrayList<Room> deleteRooms(ArrayList<Room> rooms)
 	{
 		try
@@ -493,6 +558,11 @@ public class Store
 		return null;
 	}
 
+	/**
+	 * Function for removing a reservation from the system
+	 * @param id the id of the reservation being removed
+	 * @return the removed reservation object, null if unsuccessful
+	 */
 	public static Reservation deleteReservation(String id)
 	{
 		try

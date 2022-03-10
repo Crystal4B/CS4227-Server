@@ -73,6 +73,7 @@ public class GraphQLDataFetchers
 	 * The DataFetcher handling createReservations requests
 	 * @return the inserted Reservation Object or null if unsuccessful
 	 */
+	@SuppressWarnings("unchecked")
 	public DataFetcher<Reservation> createReservation()
 	{
 		return dataFetchingEnvironment -> {
@@ -97,6 +98,7 @@ public class GraphQLDataFetchers
 	 * The DataFetcher handling createRooms requests
 	 * @return a list of inserted Room objects or null if unsuccessful
 	 */
+	@SuppressWarnings("unchecked")
 	public DataFetcher<ArrayList<Room>> createRooms()
 	{
 		return dataFetchingEnvironment -> {

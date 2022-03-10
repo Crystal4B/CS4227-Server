@@ -7,11 +7,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.List;
+
 import com.ibm.icu.text.SimpleDateFormat;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import dev.platinum.hotel.types.Guest;
 import dev.platinum.hotel.types.Reservation;
 import dev.platinum.hotel.types.Room;
 import dev.platinum.hotel.types.User;
@@ -52,12 +55,22 @@ public class Store
 		try
 		{
 			Statement statement = connection.createStatement();
-			String reservationTable = "CREATE TABLE IF NOT EXISTS reservations(id INTEGER PRIMARY KEY AUTOINCREMENT, arrival_date DATETIME NOT NULL, departure_date DATETIME NOT NULL, room_ids TEXT NOT NULL)"; // Room_ids as text in format "id,id,id"
-			String roomTable = "CREATE TABLE IF NOT EXISTS rooms(id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT NOT NULL, name TEXT NOT NULL, perks TEXT NOT NULL, number_of_beds INT NOT NULL, rate INT NOT NULL, user_ids TEXT NOT NULL)"; // user_ids as text in format "id,id,id"
-			String userTable = "CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT NOT NULL, email TEXT NOT NULL, username TEXT NOT NULL, password TEXT NOT NULL)";
+			String roomTable = (
+				"CREATE TABLE IF NOT EXISTS rooms(id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT NOT NULL, perks TEXT, number_of_beds INT NOT NULL, rate INT NOT NULL)"
+			); // user_ids as text in format "id,id,id"
+			String guestTable = (
+				"CREATE TABLE IF NOT EXISTS guests(id INTEGER PRIMARY KEY AUTOINCREMENT, first_name TEXT NOT NULL, last_name TEXT NOT NULL, room_id INTEGER NOT NULL, FOREIGN KEY(room_id) REFERENCES rooms(id))"
+			);
+			String reservationTable = (
+				"CREATE TABLE IF NOT EXISTS reservations(id INTEGER PRIMARY KEY AUTOINCREMENT, check_in DATETIME NOT NULL, check_out DATETIME NOT NULL, user_id INTEGER NOT NULL, guest_ids TEXT NOT NULL, FOREIGN KEY(user_id) REFERENCES users(id))"
+			); // guest_ids as text in format "id,id,id"
+			String userTable = (
+				"CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT NOT NULL, email TEXT NOT NULL, username TEXT NOT NULL, password TEXT NOT NULL)"
+			);
 
-			statement.addBatch(reservationTable);
 			statement.addBatch(roomTable);
+			statement.addBatch(guestTable);
+			statement.addBatch(reservationTable);
 			statement.addBatch(userTable);
 			statement.executeBatch();
 			
@@ -85,13 +98,14 @@ public class Store
 			{
 				String id = String.valueOf(results.getInt("id"));
 				// results.getTimestamp("column_name") returns 1970-01-01
-				Timestamp arrivalDate = Timestamp.valueOf((String) results.getObject("arrival_date"));
-				Timestamp departureDate = Timestamp.valueOf((String) results.getObject("departure_date"));
-				String roomIds = results.getString("room_ids");
-				String roomIdsArr[] = roomIds.split(",");
-				ArrayList<Room> rooms = selectRoomsByIds(roomIdsArr);
+				Timestamp checkIn = Timestamp.valueOf((String) results.getObject("check_in"));
+				Timestamp checkOut = Timestamp.valueOf((String) results.getObject("check_out"));
+				String userId = (String) results.getObject("user_id"); // POTENTIALLY JOIN users where id == user_id
+				String guestIds = results.getString("guest_ids");
+				String guestIdsArr[] = guestIds.split(",");
+				List<Guest> guests = null; // TODO: ADD SELECT GUESTS BY IDS
 
-				Reservation reservation = new Reservation(id, arrivalDate, departureDate, rooms);
+				Reservation reservation = new Reservation(id, checkIn, checkOut, new User(userId), guests);
 				
 				return reservation;
 			}
@@ -118,15 +132,11 @@ public class Store
 			if (results.next())
 			{
 				String id = String.valueOf(results.getInt("id"));
-				String name = results.getString("name");
 				String perks = results.getString("perks");
 				int numberOfBeds = results.getInt("number_of_beds");
 				int rate = results.getInt("rate");
-				String userIds = results.getString("user_ids");
-				String ids[] = userIds.split(",");
-				ArrayList<User> occupants = selectUsersByIds(ids);
 
-				Room room = new Room(id, name, perks, numberOfBeds, rate, occupants);
+				Room room = new Room(id, perks, numberOfBeds, rate);
 				
 				return room;
 			}

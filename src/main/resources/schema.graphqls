@@ -9,23 +9,30 @@ type User
 	password: String
 }
 
+type Guest
+{
+	id: ID!
+	firstName: String!
+	lastName: String!
+	room: Room!
+}
+
 type Reservation
 {
 	id: ID!
-	arrivalDate: Date!
-	departureDate: Date!
-	rooms: [Room]
+	checkIn: Date!
+	checkOut: Date!
+	user: User
+	guests: [Guest]
 }
 
 type Room
 {
 	id: ID
 	type: String
-	name: String
 	perks: String
 	numberOfBeds: Int
 	rate: Int
-	occupants: [User]
 }
 
 input UserInput
@@ -37,23 +44,30 @@ input UserInput
 	password: String
 }
 
+input GuestInput
+{
+	id: ID
+	firstName: String
+	lastName: String
+	roomId: ID
+}
+
 input ReservationInput
 {
 	id: ID
-	arrivalDate: Date!
-	departureDate: Date!
-	rooms: [RoomInput]
+	checkIn: Date!
+	checkOut: Date!
+	user: UserInput!
+	guests: [GuestInput]!
 }
 
 input RoomInput
 {
 	id: ID
 	type: String
-	name: String
 	perks: String
 	numberOfBeds: Int
 	rate: Int
-	occupants: [UserInput]
 }
 
 type Query

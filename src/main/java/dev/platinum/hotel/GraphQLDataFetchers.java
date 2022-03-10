@@ -2,6 +2,7 @@ package dev.platinum.hotel;
 
 import org.springframework.stereotype.Component;
 
+import dev.platinum.hotel.types.Guest;
 import dev.platinum.hotel.types.Reservation;
 import dev.platinum.hotel.types.Room;
 import dev.platinum.hotel.types.User;
@@ -10,6 +11,8 @@ import graphql.schema.DataFetcher;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Map;
+
+// TODO: UPDATE DATAFETCHERS TO ADD GUESTS
 
 /**
  * The GraphQLDataFetchers class for handling incoming requests
@@ -78,17 +81,22 @@ public class GraphQLDataFetchers
 	{
 		return dataFetchingEnvironment -> {
 			Map<String, Object> data = dataFetchingEnvironment.getArgument("input");
-			Timestamp arrivalDate = (Timestamp) data.get("arrivalDate");
-			Timestamp departureDate = (Timestamp) data.get("departureDate");
-			ArrayList<Map<String, String>> roomsMap = (ArrayList<Map<String, String>>) data.get("rooms");
-			ArrayList<Room> rooms = new ArrayList<>();
-			for (Map<String, String> map : roomsMap)
+			Timestamp checkIn = (Timestamp) data.get("checkIn");
+			Timestamp checkOut = (Timestamp) data.get("checkOut");
+
+			Map<String, String> userMap = (Map<String, String>) data.get("user");
+			String userId = userMap.get("id");
+			User user = new User(userId);
+
+			ArrayList<Map<String, String>> guestsMap = (ArrayList<Map<String, String>>) data.get("guests");
+			ArrayList<Guest> guests = new ArrayList<>();
+			for (Map<String, String> map : guestsMap)
 			{
 				String id = map.get("id");
-				rooms.add(new Room(id));
+				guests.add(new Guest(id));
 			}
 
-			Reservation incomingReservation = new Reservation(arrivalDate, departureDate, rooms);
+			Reservation incomingReservation = new Reservation(checkIn, checkOut, user, guests);
 
 			return Store.insertReservation(incomingReservation);
 		};
@@ -98,7 +106,6 @@ public class GraphQLDataFetchers
 	 * The DataFetcher handling createRooms requests
 	 * @return a list of inserted Room objects or null if unsuccessful
 	 */
-	@SuppressWarnings("unchecked")
 	public DataFetcher<ArrayList<Room>> createRooms()
 	{
 		return dataFetchingEnvironment -> {
@@ -107,19 +114,11 @@ public class GraphQLDataFetchers
 			for (Map<String, Object> map : roomsMap)
 			{
 				String type = (String) map.get("type");
-				String name = (String) map.get("name");
 				String perks = (String) map.get("perks");
 				Integer numberOfBeds = (Integer) map.get("numberOfBeds");
 				Integer rate = (Integer) map.get("rate");
-				ArrayList<Map<String, String>> occupantsMap = (ArrayList<Map<String, String>>) map.get("occupants");
-				ArrayList<User> occupants = new ArrayList<>();
-				for (Map<String, String> userMap : occupantsMap)
-				{
-					String id = userMap.get("id");
-					occupants.add(new User(id));
-				}
 
-				rooms.add(new Room(name, type, perks, numberOfBeds, rate, occupants));
+				rooms.add(new Room(type, perks, numberOfBeds, rate));
 			}
 
 			return Store.insertRooms(rooms);

@@ -6,11 +6,14 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import dev.platinum.hotel.types.Guest;
 import dev.platinum.hotel.types.Reservation;
 import dev.platinum.hotel.types.Room;
 import dev.platinum.hotel.types.User;
 
+/**
+ * Store class for hanadling insert queries
+ * @author Marcin Sęk
+ */
 public class InsertQueries extends StoreComponent
 {
 	/**

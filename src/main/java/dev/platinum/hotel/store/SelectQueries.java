@@ -13,6 +13,10 @@ import dev.platinum.hotel.types.Reservation;
 import dev.platinum.hotel.types.Room;
 import dev.platinum.hotel.types.User;
 
+/**
+ * Store class for hanadling select queries
+ * @author Marcin Sęk
+ */
 public class SelectQueries extends StoreComponent
 {
 	/**

@@ -2,6 +2,9 @@ package dev.platinum.hotel;
 
 import org.springframework.stereotype.Component;
 
+import dev.platinum.hotel.store.DeleteQueries;
+import dev.platinum.hotel.store.InsertQueries;
+import dev.platinum.hotel.store.SelectQueries;
 import dev.platinum.hotel.types.Guest;
 import dev.platinum.hotel.types.Reservation;
 import dev.platinum.hotel.types.Room;
@@ -10,6 +13,7 @@ import graphql.schema.DataFetcher;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 // TODO: UPDATE DATAFETCHERS TO ADD GUESTS
@@ -28,20 +32,20 @@ public class GraphQLDataFetchers
 	public DataFetcher<Reservation> getReservationByIdDataFetcher()
 	{
 		return dataFetchingEnvironment -> {
-			String reservationId = dataFetchingEnvironment.getArgument("id");
-			return Store.selectReservationById(reservationId);
+			int reservationId = dataFetchingEnvironment.getArgument("id");
+			return SelectQueries.selectReservationById(reservationId);
 		};
 	}
 
-		/**
+	/**
 	 * The DataFetcher handling RoomById requests
 	 * @return a Room Object or null if not found
 	 */
 	public DataFetcher<Room> getRoomByIdDataFetcher()
 	{
 		return dataFetchingEnvironment -> {
-			String roomId = dataFetchingEnvironment.getArgument("id");
-			return Store.selectRoomById(roomId);
+			int roomId = dataFetchingEnvironment.getArgument("id");
+			return SelectQueries.selectRoomById(roomId);
 		};
 	}
 
@@ -49,12 +53,12 @@ public class GraphQLDataFetchers
 	 * The DataFetcher handling AvailableRoomsByDates requests
 	 * @return a List of Room Objects or null if not found
 	 */
-	public DataFetcher<ArrayList<Room>> getAvailableRoomsByDatesDataFetcher()
+	public DataFetcher<List<Room>> getAvailableRoomsByDatesDataFetcher()
 	{
 		return dataFetchingEnvironment -> {
 			Timestamp arrivalDate = dataFetchingEnvironment.getArgument("arrivalDate");
 			Timestamp departureDate = dataFetchingEnvironment.getArgument("departureDate");
-			return Store.selectAvailableRoomsByDates(arrivalDate, departureDate);
+			return SelectQueries.selectAvailableRoomsByDates(arrivalDate, departureDate);
 		};
 	}
 
@@ -68,7 +72,7 @@ public class GraphQLDataFetchers
 			Map<String, Object> data = dataFetchingEnvironment.getArgument("input");
 			String email = (String) data.get("email");
 			String password = (String) data.get("password");
-			return Store.selectUserByLogin(new User(email, password));
+			return SelectQueries.selectUserByLogin(new User(email, password));
 		};
 	}
 
@@ -84,12 +88,12 @@ public class GraphQLDataFetchers
 			Timestamp checkIn = (Timestamp) data.get("checkIn");
 			Timestamp checkOut = (Timestamp) data.get("checkOut");
 
-			Map<String, String> userMap = (Map<String, String>) data.get("user");
-			String userId = userMap.get("id");
+			Map<String, Integer> userMap = (Map<String, Integer>) data.get("user");
+			int userId = userMap.get("id");
 			User user = new User(userId);
 
-			ArrayList<Map<String, String>> guestsMap = (ArrayList<Map<String, String>>) data.get("guests");
-			ArrayList<Guest> guests = new ArrayList<>();
+			List<Map<String, String>> guestsMap = (ArrayList<Map<String, String>>) data.get("guests");
+			List<Guest> guests = new ArrayList<>();
 			for (Map<String, String> map : guestsMap)
 			{
 				String id = map.get("id");
@@ -98,7 +102,7 @@ public class GraphQLDataFetchers
 
 			Reservation incomingReservation = new Reservation(checkIn, checkOut, user, guests);
 
-			return Store.insertReservation(incomingReservation);
+			return InsertQueries.insertReservation(incomingReservation);
 		};
 	}
 
@@ -106,11 +110,11 @@ public class GraphQLDataFetchers
 	 * The DataFetcher handling createRooms requests
 	 * @return a list of inserted Room objects or null if unsuccessful
 	 */
-	public DataFetcher<ArrayList<Room>> createRooms()
+	public DataFetcher<List<Room>> createRooms()
 	{
 		return dataFetchingEnvironment -> {
-			ArrayList<Map<String, Object>> roomsMap = dataFetchingEnvironment.getArgument("input");
-			ArrayList<Room> rooms = new ArrayList<>();
+			List<Map<String, Object>> roomsMap = dataFetchingEnvironment.getArgument("input");
+			List<Room> rooms = new ArrayList<>();
 			for (Map<String, Object> map : roomsMap)
 			{
 				String type = (String) map.get("type");
@@ -121,7 +125,7 @@ public class GraphQLDataFetchers
 				rooms.add(new Room(type, perks, numberOfBeds, rate));
 			}
 
-			return Store.insertRooms(rooms);
+			return InsertQueries.insertRooms(rooms);
 		};
 	}
 
@@ -137,7 +141,7 @@ public class GraphQLDataFetchers
 			String email = (String) data.get("email");
 			String username = (String) data.get("username");
 			String password = (String) data.get("password");
-			return Store.insertUser(new User(type, email, username, password));
+			return InsertQueries.insertUser(new User(type, email, username, password));
 		};
 	}
 
@@ -148,9 +152,9 @@ public class GraphQLDataFetchers
 	public DataFetcher<User> removeUser()
 	{
 		return dataFetchingEnvironment -> {
-			Map<String, Object> data = dataFetchingEnvironment.getArgument("input");
-			String id = (String) data.get("id");
-			return Store.deleteUser(new User(id));
+			Map<String, Integer> data = dataFetchingEnvironment.getArgument("input");
+			int id = data.get("id");
+			return DeleteQueries.deleteUser(new User(id));
 		};
 	}
 
@@ -158,19 +162,19 @@ public class GraphQLDataFetchers
 	 * The DataFetcher handling removeRooms requests
 	 * @return a list of removed Room objects or null if unsuccessful
 	 */
-	public DataFetcher<ArrayList<Room>> removeRooms()
+	public DataFetcher<List<Room>> removeRooms()
 	{
 		return dataFetchingEnvironment -> {
-			ArrayList<Map<String, Object>> roomsMap = dataFetchingEnvironment.getArgument("input");
-			ArrayList<Room> rooms = new ArrayList<>();
+			List<Map<String, Object>> roomsMap = dataFetchingEnvironment.getArgument("input");
+			List<Room> rooms = new ArrayList<>();
 			for (Map<String, Object> map : roomsMap)
 			{
-				String id = (String) map.get("id");
+				int id = (int) map.get("id");
 
 				rooms.add(new Room(id));
 			}
 
-			return Store.deleteRooms(rooms);
+			return DeleteQueries.deleteRooms(rooms);
 		};
 	}
 
@@ -184,7 +188,7 @@ public class GraphQLDataFetchers
 			Map<String, Object> data = dataFetchingEnvironment.getArgument("input");
 			String id = (String) data.get("id");
 
-			return Store.deleteReservation(id);
+			return DeleteQueries.deleteReservation(id);
 		};
 	}
 }

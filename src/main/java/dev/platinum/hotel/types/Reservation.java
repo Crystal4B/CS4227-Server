@@ -3,15 +3,13 @@ package dev.platinum.hotel.types;
 import java.sql.Timestamp;
 import java.util.List;
 
-// TODO: UPDATE JAVADOCS
-
 /**
  * The Reservation class for parsing and dispatching reservation queries & mutations
  * @author Marcin Sęk
  */
 public class Reservation
 {
-	private String id;
+	private int id;
 	private Timestamp checkIn;
 	private Timestamp checkOut;
 	private User user;
@@ -19,8 +17,8 @@ public class Reservation
 
 	/**
 	 * Constructor using arrival and departure dates only
-	 * @param arrivalDate the check-in date of the reservation
-	 * @param departureDate the check-out date of the reservation
+	 * @param checkIn the check-in date of the reservation
+	 * @param checkOut the check-out date of the reservation
 	 */
 	public Reservation(Timestamp checkIn, Timestamp checkOut)
 	{
@@ -32,8 +30,8 @@ public class Reservation
 	 * Constructor using arrivalDate, departureDate and rooms
 	 * @param checkIn the check-in date of the reservation
 	 * @param checkOut the check-out date of the reservation
-	 * @param user
-	 * @param guests
+	 * @param user the user who made the reservation
+	 * @param guests the guests staying in the hotel in the reservation
 	 */
 	public Reservation(Timestamp checkIn, Timestamp checkOut, User user, List<Guest> guests)
 	{
@@ -47,10 +45,10 @@ public class Reservation
 	 * @param id the id of the reservation in the database
 	 * @param checkIn the check-in date of the reservation
 	 * @param checkOut the check-out date of the reservation
-	 * @param user
-	 * @param guests
+	 * @param user the user who made the reservation
+	 * @param guests the guests staying in the hotel in the reservation
 	 */
-	public Reservation(String id, Timestamp checkIn, Timestamp checkOut, User user, List<Guest> guests)
+	public Reservation(int id, Timestamp checkIn, Timestamp checkOut, User user, List<Guest> guests)
 	{
 		this(checkIn, checkOut, user, guests);
 		this.id = id;
@@ -58,9 +56,9 @@ public class Reservation
 
 	/**
 	 * Simple id getter
-	 * @return id of reservation as string
+	 * @return id of reservation as int
 	 */
-	public String getId()
+	public int getId()
 	{
 		return this.id;
 	}
@@ -83,6 +81,10 @@ public class Reservation
 		return this.checkOut;
 	}
 
+	/**
+	 * Simple user getter
+	 * @return user who created the reservation
+	 */
 	public User getUser()
 	{
 		return this.user;
@@ -101,7 +103,7 @@ public class Reservation
 	 * Simple id setter
 	 * @param newId desired id for reservation
 	 */
-	public void setId(String newId)
+	public void setId(int newId)
 	{
 		this.id = newId;
 	}
@@ -125,8 +127,17 @@ public class Reservation
 	}
 
 	/**
-	 * Simple rooms setter
-	 * @param newRooms desired list of rooms for reservation
+	 * Simple user setter
+	 * @param newUser desired user for reservation
+	 */
+	public void setUser(User newUser)
+	{
+		this.user = newUser;
+	}
+
+	/**
+	 * Simple guests setter
+	 * @param newGuests desired list of guests for reservation
 	 */
 	public void setGuests(List<Guest> newGuests)
 	{

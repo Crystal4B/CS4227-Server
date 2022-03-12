@@ -6,7 +6,7 @@ package dev.platinum.hotel.types;
  */
 public class User
 {
-	private String id;
+	private int id;
 	private String type;
 	private String email;
 	private String username;
@@ -16,7 +16,7 @@ public class User
 	 * Constructor using only id
 	 * @param id of the user
 	 */
-	public User(String id)
+	public User(int id)
 	{
 		this.id = id;
 	}
@@ -38,7 +38,7 @@ public class User
 	 * @param type of user
 	 * @param email address of the user
 	 */
-	public User(String id, String type, String email)
+	public User(int id, String type, String email)
 	{
 		this(id);
 		this.type = type;
@@ -76,7 +76,7 @@ public class User
 	 * @param username of the user
 	 * @param password of the user
 	 */
-	public User(String id, String type, String email, String username, String password)
+	public User(int id, String type, String email, String username, String password)
 	{
 		this(type, email, username, password);
 		this.id = id;
@@ -84,9 +84,9 @@ public class User
 
 	/**
 	 * Simple id getter
-	 * @return id of user as a String
+	 * @return id of user as a int
 	 */
-	public String getId()
+	public int getId()
 	{
 		return this.id;
 	}
@@ -131,7 +131,7 @@ public class User
 	 * Simple id setter
 	 * @param newId desired id for the user
 	 */
-	public void setId(String newId)
+	public void setId(int newId)
 	{
 		this.id = newId;
 	}

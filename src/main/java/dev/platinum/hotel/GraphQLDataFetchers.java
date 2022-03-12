@@ -152,8 +152,8 @@ public class GraphQLDataFetchers
 	public DataFetcher<User> removeUser()
 	{
 		return dataFetchingEnvironment -> {
-			Map<String, Integer> data = dataFetchingEnvironment.getArgument("input");
-			int id = data.get("id");
+			Map<String, String> data = dataFetchingEnvironment.getArgument("input");
+			int id = Integer.parseInt(data.get("id"));
 			return DeleteQueries.deleteUser(new User(id));
 		};
 	}
@@ -169,7 +169,7 @@ public class GraphQLDataFetchers
 			List<Room> rooms = new ArrayList<>();
 			for (Map<String, Object> map : roomsMap)
 			{
-				int id = (int) map.get("id");
+				int id =  Integer.parseInt((String) map.get("id"));
 
 				rooms.add(new Room(id));
 			}

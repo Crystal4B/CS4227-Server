@@ -25,7 +25,7 @@ public class SelectQueries extends StoreComponent
 		try
 		{
 			Statement statement = connection.createStatement();
-			String selectReservation = "SELECT * FROM " + RESERVATIONS_TABLE_NAME + " WHERE " + ID_COLUMN + " = " + reservationId;
+			String selectReservation = "SELECT * FROM " + RESERVATIONS_TABLE_NAME + " INNER JOIN " + USERS_TABLE_NAME + " ON " + USERS_TABLE_NAME + "." + ID_COLUMN + "=" + RESERVATIONS_TABLE_NAME + "." + USER_ID_COLUMN + " WHERE " + ID_COLUMN + " = " + reservationId;
 			ResultSet results = statement.executeQuery(selectReservation);
 			if (results.next())
 			{
@@ -35,13 +35,17 @@ public class SelectQueries extends StoreComponent
 				Timestamp checkIn = Timestamp.valueOf((String) results.getObject(CHECK_IN_COLUMN));
 				Timestamp checkOut = Timestamp.valueOf((String) results.getObject(CHECK_OUT_COLUMN));
 
-				int userId = results.getInt(USER_ID_COLUMN); // TODO: add INNER JOIN USER_TABLE_NAME ON USER_TABLE_NAME.ID_COLUMN = RESERVATIONS_TABLE_NAME.USER_ID_COLUMN
+				int userId = results.getInt(USER_ID_COLUMN);
+				String type = results.getString(TYPE_COLUMN);
+				String email = results.getString(EMAIL_COLUMN);
+				String username = results.getString(USERNAME_COLUMN);
+				User user = new User(userId, type, email, username);
 				
 				String guestIds = results.getString(GUEST_IDS_COLUMN);
 				int guestIdsArr[] = Arrays.stream(guestIds.split(",")).mapToInt(Integer::parseInt).toArray();
 				List<Guest> guests = selectGuestsByIds(guestIdsArr);
 
-				Reservation reservation = new Reservation(id, checkIn, checkOut, new User(userId), guests); // TODO: replace new User(userId) with parsed user object
+				Reservation reservation = new Reservation(id, checkIn, checkOut, user, guests);
 				
 				return reservation;
 			}
@@ -214,7 +218,41 @@ public class SelectQueries extends StoreComponent
 	 */
 	public static List<Room> selectOccupiedRoomsByGuestIds(int ids[])
 	{
-		// TODO: implement query
+		String selectRoomsByGuests = "SELECT room_id, type, perks, number_of_beds, rate FROM " + GUESTS_TABLE_NAME + " INNER JOIN " + ROOMS_TABLE_NAME + " ON " + ROOMS_TABLE_NAME + "." + ID_COLUMN + "=" + GUESTS_TABLE_NAME + "." + ROOM_ID_COLUMN + " WHERE " + ID_COLUMN + " IN (";
+		for (int i = 0; i < ids.length; i++)
+		{
+			selectRoomsByGuests += ids[i];
+			if (i < ids.length - 1)
+			{
+				selectRoomsByGuests += ",";
+			}
+		}
+		selectRoomsByGuests += ")";
+
+		try
+		{
+			Statement statement = connection.createStatement();
+			ResultSet results = statement.executeQuery(selectRoomsByGuests);
+
+			List<Room> rooms = new ArrayList<>();
+			while (results.next())
+			{
+				int roomId = results.getInt(ROOM_ID_COLUMN);
+				String type = results.getString(TYPE_COLUMN);
+				String perks = results.getString(PERKS_COLUMN);
+				int numberOfBeds = results.getInt(NUMBER_OF_BEDS_COLUMN);
+				int rate = results.getInt(RATE_COLUMN);
+
+				rooms.add(new Room(roomId, type, perks, numberOfBeds, rate));
+			}
+
+			return rooms;
+		}
+		catch (SQLException e)
+		{
+			System.out.println(e);
+		}
+
 		return null;
 	}
 
@@ -225,7 +263,26 @@ public class SelectQueries extends StoreComponent
 	 */
 	public static User selectUserById(int id)
 	{
-		// TODO: implement query
+		String selectUser = "SELECT * FROM " + USERS_TABLE_NAME + " WHERE " + ID_COLUMN + " = " + id;
+
+		try
+		{
+			Statement statement = connection.createStatement();
+			ResultSet results = statement.executeQuery(selectUser);
+
+			if (results.next())
+			{
+				String type = results.getString(TYPE_COLUMN);
+				String username = results.getString(USERNAME_COLUMN);
+				
+				return new User(id, type, username);
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println(e);
+		}
+
 		return null;
 	}
 
@@ -236,7 +293,46 @@ public class SelectQueries extends StoreComponent
 	 */
 	public static List<Guest> selectGuestsByIds(int ids[])
 	{
-		// TODO: implement query
+		String selectRoomsByGuests = "SELECT * FROM " + GUESTS_TABLE_NAME + " INNER JOIN " + ROOMS_TABLE_NAME + " ON " + ROOMS_TABLE_NAME + "." + ID_COLUMN + "=" + GUESTS_TABLE_NAME + "." + ROOM_ID_COLUMN + " WHERE " + ID_COLUMN + " IN (";
+		for (int i = 0; i < ids.length; i++)
+		{
+			selectRoomsByGuests += ids[i];
+			if (i < ids.length - 1)
+			{
+				selectRoomsByGuests += ",";
+			}
+		}
+		selectRoomsByGuests += ")";
+
+		try
+		{
+			Statement statement = connection.createStatement();
+			ResultSet results = statement.executeQuery(selectRoomsByGuests);
+
+			List<Guest> guests = new ArrayList<>();
+			while (results.next())
+			{
+				int id = results.getInt(ID_COLUMN);
+				String firstName = results.getString(FIRST_NAME_COLUMN);
+				String lastName = results.getString(LAST_NAME_COLUMN);
+
+				int roomId = results.getInt(ROOM_ID_COLUMN);
+				String type = results.getString(TYPE_COLUMN);
+				String perks = results.getString(PERKS_COLUMN);
+				int numberOfBeds = results.getInt(NUMBER_OF_BEDS_COLUMN);
+				int rate = results.getInt(RATE_COLUMN);
+				Room occupiedRoom = new Room(roomId, type, perks, numberOfBeds, rate);
+
+				guests.add(new Guest(id, firstName, lastName, occupiedRoom));
+			}
+
+			return guests;
+		}
+		catch (SQLException e)
+		{
+			System.out.println(e);
+		}
+
 		return null;
 	}
 

@@ -46,6 +46,19 @@ public class User
 	}
 
 	/**
+	 * Constructor using id, type, email and username
+	 * @param id of user
+	 * @param type of user
+	 * @param email address of user
+	 * @param username of user
+	 */
+	public User(int id, String type, String email, String username)
+	{
+		this(id, type, email);
+		this.username = username;
+	}
+
+	/**
 	 * Constructor using type, email, username and password
 	 * @param type of user
 	 * @param email address of the user

@@ -92,11 +92,11 @@ public class GraphQLDataFetchers
 			int userId = userMap.get("id");
 			User user = new User(userId);
 
-			List<Map<String, String>> guestsMap = (ArrayList<Map<String, String>>) data.get("guests");
+			List<Map<String, Integer>> guestsMap = (List<Map<String, Integer>>) data.get("guests");
 			List<Guest> guests = new ArrayList<>();
-			for (Map<String, String> map : guestsMap)
+			for (Map<String, Integer> map : guestsMap)
 			{
-				String id = map.get("id");
+				int id = map.get("id");
 				guests.add(new Guest(id));
 			}
 

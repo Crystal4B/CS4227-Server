@@ -85,11 +85,16 @@ public class StoreComponent
 			String userTable = (
 				"CREATE TABLE IF NOT EXISTS" + USERS_TABLE_NAME + "(" + ID_COLUMN + "INTEGER PRIMARY KEY AUTOINCREMENT," + TYPE_COLUMN + "TEXT NOT NULL," + EMAIL_COLUMN + "TEXT NOT NULL," + USERNAME_COLUMN + "TEXT NOT NULL," + PASSWORD_COLUMN + "TEXT NOT NULL)"
 			);
+			// TODO: figure out default admin requirements
+			String insertAdminUser = (
+				"INSERT INTO " + USERS_TABLE_NAME + "(" + TYPE_COLUMN + "," + EMAIL_COLUMN + "," + USERNAME_COLUMN + "," + PASSWORD_COLUMN + ") VALUES ('Staff', 'admin@hotelsystem.com', 'Admin', 'password')"
+			);
 
 			statement.addBatch(roomTable);
 			statement.addBatch(guestTable);
 			statement.addBatch(reservationTable);
 			statement.addBatch(userTable);
+			statement.addBatch(insertAdminUser);
 			statement.executeBatch();
 			
 			connection.commit();

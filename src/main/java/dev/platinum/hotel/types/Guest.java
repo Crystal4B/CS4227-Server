@@ -6,7 +6,7 @@ package dev.platinum.hotel.types;
  */
 public class Guest
 {
-	private String id;
+	private int id;
 	private String firstName;
 	private String lastName;
 	private Room room;
@@ -15,7 +15,7 @@ public class Guest
 	 * Simple constructor for Guest with an Id
 	 * @param id of the guest
 	 */
-	public Guest(String id)
+	public Guest(int id)
 	{
 		this.id = id;
 	}
@@ -27,7 +27,7 @@ public class Guest
 	 * @param lastName of the guest
 	 * @param room occupied by the guest
 	 */
-	public Guest(String id, String firstName, String lastName, Room room)
+	public Guest(int id, String firstName, String lastName, Room room)
 	{
 		this(id);
 		this.firstName = firstName;
@@ -39,7 +39,7 @@ public class Guest
 	 * Simple id getter
 	 * @return id of the guest as a String
 	 */
-	public String getId()
+	public int getId()
 	{
 		return this.id;
 	}
@@ -75,7 +75,7 @@ public class Guest
 	 * Simple id setter
 	 * @param newId for the guest
 	 */
-	public void setId(String newId)
+	public void setId(int newId)
 	{
 		this.id = newId;
 	}

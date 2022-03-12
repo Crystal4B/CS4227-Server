@@ -25,7 +25,7 @@ public class InsertQueries extends StoreComponent
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 			Statement statement = connection.createStatement();
-			String insertReservation = String.format("INSERT INTO reservations(check_in, check_out, room_ids) VALUES('%s', '%s', '%s')", sdf.format(incomingReservation.getCheckIn()), sdf.format(incomingReservation.getCheckOut()));
+			String insertReservation = "INSERT INTO " + RESERVATIONS_TABLE_NAME + "(" + CHECK_IN_COLUMN + "," + CHECK_OUT_COLUMN + "," + ROOM_ID_COLUMN + ") VALUES('" + sdf.format(incomingReservation.getCheckIn()) + "', '" + sdf.format(incomingReservation.getCheckOut()) + "', '" + 1 + "')"; //TODO: UPDATE QUERY TO FIT NEW REQUIREMENTS
 
 			statement.execute(insertReservation);
 			connection.commit();
@@ -59,7 +59,7 @@ public class InsertQueries extends StoreComponent
 			{
 				Room room = rooms.get(i);
 
-				String insertRooms = String.format("INSERT INTO 'rooms'('type', 'perks', 'number_of_beds', 'rate') VALUES('%s', '%s', '%s', %d, %d, '%s')", room.getType(), room.getPerks(), room.getNumberOfBeds(), room.getRate());
+				String insertRooms = "INSERT INTO " + ROOMS_TABLE_NAME + "(" + TYPE_COLUMN + "," + PERKS_COLUMN + "," + NUMBER_OF_BEDS_COLUMN + "," + RATE_COLUMN + ") VALUES('" + room.getType() + "', '" + room.getPerks() + "', '" + room.getNumberOfBeds() + "'," + room.getRate() + ")";
 				statement.addBatch(insertRooms);
 			}
 
@@ -97,7 +97,7 @@ public class InsertQueries extends StoreComponent
 	{
 		try
 		{
-			String insertUser = String.format("INSERT INTO 'users'('type', 'email', 'username', 'password') VALUES('%s', '%s', '%s', '%s')", user.getType(), user.getEmail(), user.getUsername(), user.getPassword());
+			String insertUser = "INSERT INTO " + USERS_TABLE_NAME + "(" + TYPE_COLUMN + "," + EMAIL_COLUMN + "," + USERNAME_COLUMN + "," + PASSWORD_COLUMN + ") VALUES('" + user.getType() + "', '" + user.getEmail() + "', '" + user.getUsername() + "', '" + user.getPassword() + "')";
 
 			Statement statement = connection.createStatement();
 			statement.execute(insertUser);

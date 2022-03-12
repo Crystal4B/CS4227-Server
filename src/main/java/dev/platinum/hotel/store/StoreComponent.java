@@ -87,7 +87,7 @@ public class StoreComponent
 			);
 			// TODO: figure out default admin requirements
 			String insertAdminUser = (
-				"INSERT INTO " + USERS_TABLE_NAME + "(" + TYPE_COLUMN + "," + EMAIL_COLUMN + "," + USERNAME_COLUMN + "," + PASSWORD_COLUMN + ") VALUES ('Staff', 'admin@hotelsystem.com', 'Admin', 'password')"
+				"INSERT INTO " + USERS_TABLE_NAME + "(" + TYPE_COLUMN + "," + EMAIL_COLUMN + "," + USERNAME_COLUMN + "," + PASSWORD_COLUMN + ") VALUES ('Staff', 'teamplatinumlimerick@gmail.com', 'Admin', 'password')"
 			);
 
 			statement.addBatch(roomTable);

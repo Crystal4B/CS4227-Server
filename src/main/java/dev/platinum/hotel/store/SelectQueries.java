@@ -203,6 +203,11 @@ public class SelectQueries extends StoreComponent
 			{
 				guestIds += results.getString(GUEST_IDS_COLUMN);
 			}
+			if (guestIds == "")
+			{
+				return new ArrayList<>();
+			}
+
 			int ids[] = Arrays.stream(guestIds.split(",")).mapToInt(Integer::parseInt).toArray();
 
 			return selectOccupiedRoomsByGuestIds(ids);
@@ -212,7 +217,7 @@ public class SelectQueries extends StoreComponent
 			System.out.println(e);
 		}
 
-		return null;
+		return new ArrayList<>();
 	}
 
 	/**

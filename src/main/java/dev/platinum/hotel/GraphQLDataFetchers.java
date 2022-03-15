@@ -56,9 +56,9 @@ public class GraphQLDataFetchers
 	public DataFetcher<List<Room>> getAvailableRoomsByDatesDataFetcher()
 	{
 		return dataFetchingEnvironment -> {
-			Timestamp arrivalDate = dataFetchingEnvironment.getArgument("arrivalDate");
-			Timestamp departureDate = dataFetchingEnvironment.getArgument("departureDate");
-			return SelectQueries.selectAvailableRoomsByDates(arrivalDate, departureDate);
+			Timestamp checkIn = dataFetchingEnvironment.getArgument("checkIn");
+			Timestamp checkOut = dataFetchingEnvironment.getArgument("checkOut");
+			return SelectQueries.selectAvailableRoomsByDates(checkIn, checkOut);
 		};
 	}
 

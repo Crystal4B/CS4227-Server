@@ -74,7 +74,7 @@ type Query
 {
 	reservationById(id: ID!): Reservation
 	roomById(id: ID!): Room
-	availableRoomsByDates(arrivalDate: Date!, departureDate: Date!): [Room]
+	availableRoomsByDates(checkIn: Date!, checkOut: Date!): [Room]
 	loginUser(input: UserInput): User
 }
 

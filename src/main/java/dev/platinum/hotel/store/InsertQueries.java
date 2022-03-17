@@ -132,10 +132,17 @@ public class InsertQueries extends StoreComponent
 		{
 			Statement statement = connection.createStatement();
 
-			String insertRooms = "INSERT INTO " + ROOMS_TABLE_NAME + "(" + TYPE_COLUMN + "," + PERKS_COLUMN + "," + NUMBER_OF_BEDS_COLUMN + "," + RATE_COLUMN + ") VALUES('" + room.getType() + "', '" + room.getPerks() + "', '" + room.getNumberOfBeds() + "'," + room.getRate() + ")";
+			String insertRoom = "INSERT INTO " + ROOMS_TABLE_NAME + "(" + TYPE_COLUMN + "," + PERKS_COLUMN + "," + NUMBER_OF_BEDS_COLUMN + "," + RATE_COLUMN + ") VALUES('" + room.getType() + "', '" + room.getPerks() + "', '" + room.getNumberOfBeds() + "'," + room.getRate() + ")";
 
-			statement.execute(insertRooms);
+			statement.execute(insertRoom);
 			connection.commit();
+
+			ResultSet keys = statement.getGeneratedKeys();
+			if (keys.next())
+			{
+				room.setId((int) keys.getLong(1));
+				return room;
+			}
 		}
 		catch (SQLException e)
 		{

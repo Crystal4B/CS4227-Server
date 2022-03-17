@@ -44,6 +44,12 @@ public class StoreComponent
 	protected static final String USERNAME_COLUMN = "username";
 	protected static final String PASSWORD_COLUMN = "password";
 
+	// Voucher table strings
+	protected static final String VOUCHER_TABLE_NAME = "vouchers";
+	protected static final String AMOUNT_COLUMN = "amount";
+	protected static final String ISSUE_DATE_COLUMN = "issue_date";
+	protected static final String EXPIRY_DATE_COLUMN = "expiry_date";
+
 	protected static Connection connection;
 	
 	/**
@@ -85,6 +91,9 @@ public class StoreComponent
 			String userTable = (
 				"CREATE TABLE IF NOT EXISTS " + USERS_TABLE_NAME + "(" + ID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT," + TYPE_COLUMN + " TEXT NOT NULL," + EMAIL_COLUMN + " TEXT NOT NULL," + USERNAME_COLUMN + " TEXT NOT NULL," + PASSWORD_COLUMN + " TEXT NOT NULL)"
 			);
+			String voucherTable = (
+				"CREATE TABLE IF NOT EXISTS " + VOUCHER_TABLE_NAME + "(" + ID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT," + TYPE_COLUMN + " TEXT NOT NULL," + AMOUNT_COLUMN + " INT NOT NULL," + ISSUE_DATE_COLUMN + " DATETIME NOT NULL," + EXPIRY_DATE_COLUMN + " DATETIME NOT NULL)"
+			);
 			// TODO: figure out default admin requirements
 			String insertAdminUser = (
 				"INSERT INTO " + USERS_TABLE_NAME + "(" + TYPE_COLUMN + "," + EMAIL_COLUMN + "," + USERNAME_COLUMN + "," + PASSWORD_COLUMN + ") VALUES ('Staff', 'teamplatinumlimerick@gmail.com', 'Admin', 'password')"
@@ -94,6 +103,7 @@ public class StoreComponent
 			statement.addBatch(guestTable);
 			statement.addBatch(reservationTable);
 			statement.addBatch(userTable);
+			statement.addBatch(voucherTable);
 			statement.addBatch(insertAdminUser);
 			statement.executeBatch();
 			

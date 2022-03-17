@@ -35,6 +35,15 @@ type Room
 	rate: Int
 }
 
+type Voucher
+{
+	id: ID
+	type: String
+	amount: Int
+	issue_date: Date!
+	expiry_date: Date!
+}
+
 input UserInput
 {
 	id: ID

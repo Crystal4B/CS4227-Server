@@ -399,10 +399,7 @@ public class SelectQueries extends StoreComponent
 				rooms.add(new Room(roomId, type, perks, numberOfBeds, rate));
 			}
 			
-			if (rooms.size() > 0)
-			{
-				return rooms;
-			}
+			return rooms;
 		}
 		catch (SQLException e)
 		{

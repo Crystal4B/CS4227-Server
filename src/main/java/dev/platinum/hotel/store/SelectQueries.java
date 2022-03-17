@@ -390,7 +390,7 @@ public class SelectQueries extends StoreComponent
 			List<Room> rooms = new ArrayList<>();
 			while (results.next())
 			{
-				int roomId = results.getInt(ROOM_ID_COLUMN);
+				int roomId = results.getInt(ID_COLUMN);
 				String type = results.getString(TYPE_COLUMN);
 				String perks = results.getString(PERKS_COLUMN);
 				int numberOfBeds = results.getInt(NUMBER_OF_BEDS_COLUMN);

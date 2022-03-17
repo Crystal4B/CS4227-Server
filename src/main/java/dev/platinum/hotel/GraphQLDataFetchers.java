@@ -107,6 +107,25 @@ public class GraphQLDataFetchers
 	}
 
 	/**
+	 * The DataFetcher handling createRoom requests
+	 * @return inserted Room object or null if unsuccessful
+	 */
+	public DataFetcher<Room> createRoom()
+	{
+		return dataFetchingEnvironment -> {
+			Map<String, Object> roomsMap = dataFetchingEnvironment.getArgument("input");
+			String type = (String) roomsMap.get("type");
+			String perks = (String) roomsMap.get("perks");
+			Integer numberOfBeds = (Integer) roomsMap.get("numberOfBeds");
+			Integer rate = (Integer) roomsMap.get("rate");
+
+			Room room = new Room(type, perks, numberOfBeds, rate);
+
+			return InsertQueries.insertRoom(room);
+		};
+	}
+
+	/**
 	 * The DataFetcher handling createRooms requests
 	 * @return a list of inserted Room objects or null if unsuccessful
 	 */
@@ -159,6 +178,22 @@ public class GraphQLDataFetchers
 	}
 
 	/**
+	 * The DataFetcher handling removeRoom requests
+	 * @return removed Room object or null if unsuccessful
+	 */
+	public DataFetcher<Room> removeRoom()
+	{
+		return dataFetchingEnvironment -> {
+			Map<String, Object> roomsMap = dataFetchingEnvironment.getArgument("input");
+			int id =  Integer.parseInt((String) roomsMap.get("id"));
+
+			Room room = new Room(id);
+
+			return DeleteQueries.deleteRoom(room);
+		};
+	}
+
+	/**
 	 * The DataFetcher handling removeRooms requests
 	 * @return a list of removed Room objects or null if unsuccessful
 	 */
@@ -189,6 +224,13 @@ public class GraphQLDataFetchers
 			String id = (String) data.get("id");
 
 			return DeleteQueries.deleteReservation(id);
+		};
+	}
+
+	public DataFetcher<List<Room>> getAllRooms()
+	{
+		return dataFetchingEnvironment -> {
+			return SelectQueries.selectAllRooms();
 		};
 	}
 }

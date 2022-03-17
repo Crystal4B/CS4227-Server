@@ -73,6 +73,7 @@ input RoomInput
 type Query
 {
 	reservationById(id: ID!): Reservation
+	allRooms(): [Room]
 	roomById(id: ID!): Room
 	availableRoomsByDates(checkIn: Date!, checkOut: Date!): [Room]
 	loginUser(input: UserInput): User
@@ -82,7 +83,9 @@ type Mutation
 {
 	createReservation(input: ReservationInput): Reservation
 	removeReservation(input: ReservationInput): Reservation
+	createRoom(input: RoomInput): Room
 	createRooms(input: [RoomInput]): [Room]
+	removeRoom(input: RoomInput): Room
 	removeRooms(input: [RoomInput]): [Room]
 	createUser(input: UserInput): User
 	removeUser(input: UserInput): User

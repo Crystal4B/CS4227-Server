@@ -147,4 +147,36 @@ public class DeleteQueries extends StoreComponent
 
 		return null;
 	}
+
+	/**
+	 * Function for removing rooms from the system
+	 * @param room being removed from the system
+	 * @return removed room object, or null if unsuccessful
+	 */
+	public static Room deleteRoom(Room room)
+	{
+		String deleteRooms = "DELETE FROM " + ROOMS_TABLE_NAME + " WHERE " + ID_COLUMN + " = " + room.getId() + "' RETURNING *";
+
+		try
+		{
+			Statement statement = connection.createStatement();
+			ResultSet results = statement.executeQuery(deleteRooms);
+
+			if (results.next())
+			{
+				int id = results.getInt(ID_COLUMN);
+				String type = results.getString(TYPE_COLUMN);
+				String perks = results.getString(PERKS_COLUMN);
+				int numberOfBeds = results.getInt(NUMBER_OF_BEDS_COLUMN);
+				int rate = results.getInt(RATE_COLUMN);
+
+				return new Room(id, type, perks, numberOfBeds, rate);
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println(e);
+		}
+		return null;
+	}
 }

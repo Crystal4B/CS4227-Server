@@ -120,4 +120,27 @@ public class InsertQueries extends StoreComponent
 
 		return null;
 	}
+
+	/**
+	 * Function for inserting a room into the system
+	 * @param room being added to the system
+	 * @return inserted Room object
+	 */
+	public static Room insertRoom(Room room)
+	{
+		try
+		{
+			Statement statement = connection.createStatement();
+
+			String insertRooms = "INSERT INTO " + ROOMS_TABLE_NAME + "(" + TYPE_COLUMN + "," + PERKS_COLUMN + "," + NUMBER_OF_BEDS_COLUMN + "," + RATE_COLUMN + ") VALUES('" + room.getType() + "', '" + room.getPerks() + "', '" + room.getNumberOfBeds() + "'," + room.getRate() + ")";
+
+			statement.execute(insertRooms);
+			connection.commit();
+		}
+		catch (SQLException e)
+		{
+			System.out.println(e);
+		}
+		return null;
+	}
 }

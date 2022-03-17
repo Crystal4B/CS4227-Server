@@ -377,4 +377,38 @@ public class SelectQueries extends StoreComponent
 		}
 		return null;
 	}
+
+	public static List<Room> selectAllRooms()
+	{
+		String selectAllRooms = "SELECT * FROM " + ROOMS_TABLE_NAME;
+
+		try
+		{
+			Statement statement = connection.createStatement();
+			ResultSet results = statement.executeQuery(selectAllRooms);
+
+			List<Room> rooms = new ArrayList<>();
+			while (results.next())
+			{
+				int roomId = results.getInt(ROOM_ID_COLUMN);
+				String type = results.getString(TYPE_COLUMN);
+				String perks = results.getString(PERKS_COLUMN);
+				int numberOfBeds = results.getInt(NUMBER_OF_BEDS_COLUMN);
+				int rate = results.getInt(RATE_COLUMN);
+
+				rooms.add(new Room(roomId, type, perks, numberOfBeds, rate));
+			}
+			
+			if (rooms.size() > 0)
+			{
+				return rooms;
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println(e);
+		}
+
+		return null;
+	}
 }

@@ -22,12 +22,12 @@ We used multiple design and architecture patterns as part of the project. The fo
 | Pattern           | Implemented By                    |
 |-------------------|-----------------------------------|
 | Command           | Marcin Sęk                        |
-| Builder           | Jordan Marshall                   |
+| Builder           | Jordan Marshall & Jakub Pažej     |
 | Template          | Aleksandr Jakusevs                |
 | Abstract Factory  | Jakub Pažej                       |
 | Plugable Adapter  | Eoin McDonough                    |
 | (ADD 6TH PATTERN) | -                                 |
-| Interceptor       | Aleksandr Jakusevs & Jakub Pažej  |
+| Interceptor       | Jakub Pažej                       |
 
 ## Contibutors
 - Marcin Sęk -            18254187         

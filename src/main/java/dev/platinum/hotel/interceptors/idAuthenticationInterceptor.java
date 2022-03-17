@@ -1,7 +1,6 @@
 package dev.platinum.hotel.interceptors;
 
 
-import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -9,36 +8,37 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.BufferedReader;
-import java.net.URLEncoder;
-import java.util.Enumeration;
-
 @Component
 public class idAuthenticationInterceptor implements HandlerInterceptor {
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-		System.out.println("username: "+request.getParameter("username"));
-		System.out.println("password: "+request.getParameter("password"));
+		//System.out.println("username: "+request.getParameter("username"));
+		//System.out.println("password: "+request.getParameter("password"));
+
+
 		/*StringBuilder builder = new StringBuilder();
 		try (BufferedReader in = request.getReader()) {
 			char[] buf = new char[4096];
 			for (int len; (len = in.read(buf)) > 0; )
 				builder.append(buf, 0, len);
-		} catch (IllegalStateException e){}
+		} catch (IllegalStateException e) {
+		}
 
 		Enumeration en = request.getParameterNames();
 		String str = "";
-		while(en.hasMoreElements()){
-			String paramName = (String)en.nextElement();
+		while (en.hasMoreElements()) {
+			String paramName = (String) en.nextElement();
 			String paramValue = request.getParameter(paramName);
 			str = str + "&" + paramName + "=" + URLEncoder.encode(paramValue);
 		}
-		if (str.length()>0)
+		if (str.length() > 0)
 			str = str.substring(1);
 
 		String requestBody = builder.toString();
 		System.out.println(requestBody);
+		check = true;
+		/*
 		String str = "password: \\\""; //12 characters
 
 		int start = requestBody.indexOf(str);

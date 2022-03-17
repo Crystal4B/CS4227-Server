@@ -172,6 +172,9 @@ public class DeleteQueries extends StoreComponent
 
 				return new Room(id, type, perks, numberOfBeds, rate);
 			}
+
+			results.close();
+			connection.commit();
 		}
 		catch (SQLException e)
 		{

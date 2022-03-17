@@ -162,6 +162,7 @@ public class DeleteQueries extends StoreComponent
 			Statement statement = connection.createStatement();
 			ResultSet results = statement.executeQuery(deleteRoom);
 
+			Room result = null;
 			if (results.next())
 			{
 				int id = results.getInt(ID_COLUMN);
@@ -170,11 +171,12 @@ public class DeleteQueries extends StoreComponent
 				int numberOfBeds = results.getInt(NUMBER_OF_BEDS_COLUMN);
 				int rate = results.getInt(RATE_COLUMN);
 
-				return new Room(id, type, perks, numberOfBeds, rate);
+				result = new Room(id, type, perks, numberOfBeds, rate);
 			}
-
 			results.close();
 			connection.commit();
+
+			return result;
 		}
 		catch (SQLException e)
 		{

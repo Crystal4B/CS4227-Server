@@ -155,13 +155,14 @@ public class DeleteQueries extends StoreComponent
 	 */
 	public static Room deleteRoom(Room room)
 	{
-		String deleteRooms = "DELETE FROM " + ROOMS_TABLE_NAME + " WHERE " + ID_COLUMN + " = " + room.getId() + "' RETURNING *";
+		String deleteRoom = "DELETE FROM " + ROOMS_TABLE_NAME + " WHERE " + ID_COLUMN + " = " + room.getId() + " RETURNING *";
 
 		try
 		{
 			Statement statement = connection.createStatement();
-			ResultSet results = statement.executeQuery(deleteRooms);
+			ResultSet results = statement.executeQuery(deleteRoom);
 
+			Room result = null;
 			if (results.next())
 			{
 				int id = results.getInt(ID_COLUMN);
@@ -170,8 +171,12 @@ public class DeleteQueries extends StoreComponent
 				int numberOfBeds = results.getInt(NUMBER_OF_BEDS_COLUMN);
 				int rate = results.getInt(RATE_COLUMN);
 
-				return new Room(id, type, perks, numberOfBeds, rate);
+				result = new Room(id, type, perks, numberOfBeds, rate);
 			}
+			results.close();
+			connection.commit();
+
+			return result;
 		}
 		catch (SQLException e)
 		{

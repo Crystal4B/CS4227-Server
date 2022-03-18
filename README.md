@@ -1,5 +1,7 @@
 # CS4227-Software-Design-And-Architecture
 
+[![Gradle Build](https://github.com/Crystal4B/CS4227-Server/actions/workflows/ci.yml/badge.svg)](https://github.com/Crystal4B/CS4227-Server/actions/workflows/ci.yml)
+
 ## About
 Hotel reservation system is a Java project designed to show effective and efficient use of design patterns and architectural patterns. The applications allows users to book and reserve different rooms. The user specifies a check-in and check-out date and the system then checks if a room is available. A room can accommodate multiple guests specified by the user. The system can be used by multiple types of users including a customer and staff members.
 
@@ -22,12 +24,12 @@ We used multiple design and architecture patterns as part of the project. The fo
 | Pattern           | Implemented By                    |
 |-------------------|-----------------------------------|
 | Command           | Marcin Sęk                        |
-| Builder           | Jordan Marshall                   |
+| Builder           | Jordan Marshall & Jakub Pažej     |
 | Template          | Aleksandr Jakusevs                |
 | Abstract Factory  | Jakub Pažej                       |
 | Plugable Adapter  | Eoin McDonough                    |
 | (ADD 6TH PATTERN) | -                                 |
-| Interceptor       | Aleksandr Jakusevs & Jakub Pažej  |
+| Interceptor       | Jakub Pažej                       |
 
 ## Contibutors
 - Marcin Sęk -            18254187         

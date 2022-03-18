@@ -227,7 +227,7 @@ public class SelectQueries extends StoreComponent
 	 */
 	public static List<Room> selectOccupiedRoomsByGuestIds(int ids[])
 	{
-		String selectRoomsByGuests = "SELECT room_id, type, perks, number_of_beds, rate FROM " + GUESTS_TABLE_NAME + " INNER JOIN " + ROOMS_TABLE_NAME + " ON " + ROOMS_TABLE_NAME + "." + ID_COLUMN + "=" + GUESTS_TABLE_NAME + "." + ROOM_ID_COLUMN + " WHERE " + ID_COLUMN + " IN (";
+		String selectRoomsByGuests = "SELECT " + ROOM_ID_COLUMN + "," + TYPE_COLUMN + "," + PERKS_COLUMN + "," + NUMBER_OF_BEDS_COLUMN + "," + RATE_COLUMN + " FROM " + GUESTS_TABLE_NAME + " INNER JOIN " + ROOMS_TABLE_NAME + " ON " + ROOMS_TABLE_NAME + "." + ID_COLUMN + "=" + GUESTS_TABLE_NAME + "." + ROOM_ID_COLUMN + " WHERE " + ID_COLUMN + " IN (";
 		for (int i = 0; i < ids.length; i++)
 		{
 			selectRoomsByGuests += ids[i];
@@ -416,7 +416,7 @@ public class SelectQueries extends StoreComponent
 	 */
 	public static boolean checkEmailAvailablity(String email)
 	{
-		String selectUserByEmail = "SELECT email FROM " + USERS_TABLE_NAME + " WHERE " + EMAIL_COLUMN + "='" + email + "'";
+		String selectUserByEmail = "SELECT " + EMAIL_COLUMN + " FROM " + USERS_TABLE_NAME + " WHERE " + EMAIL_COLUMN + "='" + email + "'";
 		try
 		{
 			Statement statement = connection.createStatement();

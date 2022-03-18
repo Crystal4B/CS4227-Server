@@ -416,13 +416,13 @@ public class SelectQueries extends StoreComponent
 	 */
 	public static boolean checkEmailAvailablity(String email)
 	{
-		String selectUserByEmail = "SELECT email FROM " + USERS_TABLE_NAME + " WHERE " + EMAIL_COLUMN + "=" + email;
+		String selectUserByEmail = "SELECT email FROM " + USERS_TABLE_NAME + " WHERE " + EMAIL_COLUMN + "='" + email + "'";
 		try
 		{
 			Statement statement = connection.createStatement();
 			ResultSet results = statement.executeQuery(selectUserByEmail);
 
-			return results.next();
+			return !results.next(); // empty results = available
 		}
 		catch(SQLException e)
 		{

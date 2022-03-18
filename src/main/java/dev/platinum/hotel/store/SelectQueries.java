@@ -408,4 +408,27 @@ public class SelectQueries extends StoreComponent
 
 		return null;
 	}
+
+	/**
+	 * Function for validating is an email address is available for creating a user
+	 * @param email address used in registration process
+	 * @return boolean value describing availability
+	 */
+	public static boolean checkEmailAvailablity(String email)
+	{
+		String selectUserByEmail = "SELECT email FROM " + USERS_TABLE_NAME + " WHERE " + EMAIL_COLUMN + "=" + email;
+		try
+		{
+			Statement statement = connection.createStatement();
+			ResultSet results = statement.executeQuery(selectUserByEmail);
+
+			return results.next();
+		}
+		catch(SQLException e)
+		{
+			System.out.println(e);
+		}
+
+		return false;
+	}
 }

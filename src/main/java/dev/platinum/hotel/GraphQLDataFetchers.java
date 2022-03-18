@@ -156,11 +156,18 @@ public class GraphQLDataFetchers
 	{
 		return dataFetchingEnvironment -> {
 			Map<String, Object> data = dataFetchingEnvironment.getArgument("input");
-			String type = (String) data.get("type");
 			String email = (String) data.get("email");
-			String username = (String) data.get("username");
-			String password = (String) data.get("password");
-			return InsertQueries.insertUser(new User(type, email, username, password));
+
+			// Validate the email address is available
+			boolean available = SelectQueries.checkEmailAvailablity(email);
+			if (available)
+			{
+				String type = (String) data.get("type");
+				String username = (String) data.get("username");
+				String password = (String) data.get("password");
+				return InsertQueries.insertUser(new User(type, email, username, password));
+			}
+			return null;
 		};
 	}
 

@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-// TODO: UPDATE DATAFETCHERS TO ADD GUESTS
-
 /**
  * The GraphQLDataFetchers class for handling incoming requests
  * @author Marcin Sęk
@@ -92,12 +90,24 @@ public class GraphQLDataFetchers
 			int userId = userMap.get("id");
 			User user = new User(userId);
 
-			List<Map<String, Integer>> guestsMap = (List<Map<String, Integer>>) data.get("guests");
+			List<Map<String, String>> guestsMap = (List<Map<String, String>>) data.get("guests");
 			List<Guest> guests = new ArrayList<>();
-			for (Map<String, Integer> map : guestsMap)
+			for (Map<String, String> map : guestsMap)
 			{
-				int id = map.get("id");
-				guests.add(new Guest(id));
+				// Get Mandatory fields
+				String firstName = map.get("firstName");
+				String lastName = map.get("lastName");
+				int roomId = Integer.parseInt(map.get("roomId"));
+
+				Guest guest = new Guest(firstName, lastName, new Room(roomId));
+
+				if (map.containsKey("id"))
+				{
+					int id = Integer.parseInt(map.get("id"));
+					guest.setId(id);
+				}
+
+				guests.add(guest);
 			}
 
 			Reservation incomingReservation = new Reservation(checkIn, checkOut, user, guests);
@@ -156,11 +166,18 @@ public class GraphQLDataFetchers
 	{
 		return dataFetchingEnvironment -> {
 			Map<String, Object> data = dataFetchingEnvironment.getArgument("input");
-			String type = (String) data.get("type");
 			String email = (String) data.get("email");
-			String username = (String) data.get("username");
-			String password = (String) data.get("password");
-			return InsertQueries.insertUser(new User(type, email, username, password));
+
+			// Validate the email address is available
+			boolean available = SelectQueries.checkEmailAvailablity(email);
+			if (available)
+			{
+				String type = (String) data.get("type");
+				String username = (String) data.get("username");
+				String password = (String) data.get("password");
+				return InsertQueries.insertUser(new User(type, email, username, password));
+			}
+			return null;
 		};
 	}
 
@@ -227,6 +244,10 @@ public class GraphQLDataFetchers
 		};
 	}
 
+	/**
+	 * The DataFetcher handling allRooms requests
+	 * @return the complete list of rooms in the hotel
+	 */
 	public DataFetcher<List<Room>> getAllRooms()
 	{
 		return dataFetchingEnvironment -> {

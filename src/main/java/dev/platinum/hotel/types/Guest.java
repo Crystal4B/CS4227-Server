@@ -21,6 +21,19 @@ public class Guest
 	}
 
 	/**
+	 * Simple constructor for Guest without id
+	 * @param firstName of the guest
+	 * @param lastName of the guest
+	 * @param room occupied by the guest
+	 */
+	public Guest(String firstName, String lastName, Room room)
+	{
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.room = room;
+	}
+
+	/**
 	 * Simple constructor for Guest with an Id, firstname, lastname and room
 	 * @param id of the guest
 	 * @param firstName of the guest

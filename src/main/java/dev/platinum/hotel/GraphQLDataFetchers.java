@@ -101,15 +101,8 @@ public class GraphQLDataFetchers
 
 				Guest guest = new Guest(firstName, lastName, new Room(roomId));
 
-				if (map.containsKey("id"))
-				{
-					int id = Integer.parseInt(map.get("id"));
-					guest.setId(id);
-				}
-
 				guests.add(guest);
 			}
-
 			Reservation incomingReservation = new Reservation(checkIn, checkOut, user, guests);
 
 			return InsertQueries.insertReservation(incomingReservation);

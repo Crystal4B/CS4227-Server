@@ -431,4 +431,45 @@ public class SelectQueries extends StoreComponent
 
 		return false;
 	}
+
+	public static List<Guest> checkGuestExistance(List<Guest> guests)
+	{
+		String selectGuestsByLegalName = "SELECT * FROM " + GUESTS_TABLE_NAME + " WHERE " + FIRST_NAME_COLUMN + " || ' ' || " + LAST_NAME_COLUMN + " IN (";
+		for (int i = 0; i < guests.size(); i++)
+		{
+			Guest guest = guests.get(i);
+			selectGuestsByLegalName += guest.getFirstName() + " " + guest.getLastName();
+			
+			if (i < guests.size()-1)
+			{
+				selectGuestsByLegalName += ",";
+			}
+		}
+		selectGuestsByLegalName += ")";
+		System.out.println(selectGuestsByLegalName);
+
+		try
+		{
+			Statement statement = connection.createStatement();
+			ResultSet results = statement.executeQuery(selectGuestsByLegalName);
+
+			List<Guest> resultList = new ArrayList<>();
+			while (results.next())
+			{
+				int id = results.getInt(ID_COLUMN);
+				String firstName = results.getString(FIRST_NAME_COLUMN);
+				String lastName = results.getString(LAST_NAME_COLUMN);
+
+				resultList.add(new Guest(id, firstName, lastName));
+			}
+
+			return resultList;
+		}
+		catch (SQLException e)
+		{
+			System.out.println(e);
+		}
+
+		return new ArrayList<>();
+	}
 }

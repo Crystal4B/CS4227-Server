@@ -86,8 +86,8 @@ public class GraphQLDataFetchers
 			Timestamp checkIn = (Timestamp) data.get("checkIn");
 			Timestamp checkOut = (Timestamp) data.get("checkOut");
 
-			Map<String, Integer> userMap = (Map<String, Integer>) data.get("user");
-			int userId = userMap.get("id");
+			Map<String, String> userMap = (Map<String, String>) data.get("user");
+			int userId = Integer.parseInt(userMap.get("id"));
 			User user = new User(userId);
 
 			List<Map<String, String>> guestsMap = (List<Map<String, String>>) data.get("guests");

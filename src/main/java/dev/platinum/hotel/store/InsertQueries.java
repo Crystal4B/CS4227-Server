@@ -36,7 +36,7 @@ public class InsertQueries extends StoreComponent
 			for (int j = 0; j < existingGuests.size(); j++)
 			{
 				Guest existingGuest = existingGuests.get(j);
-				if (incomingGuest.getFirstName() == existingGuest.getFirstName() && incomingGuest.getLastName() == existingGuest.getLastName()) 
+				if (incomingGuest.getFirstName().equals(existingGuest.getFirstName()) && incomingGuest.getLastName().equals(existingGuest.getLastName())) 
 				{
 					incomingGuests.get(i).setId(existingGuest.getId()); // Set Id for return
 					exists = true;
@@ -51,14 +51,35 @@ public class InsertQueries extends StoreComponent
 		}
 
 		newGuests = InsertQueries.insertGuests(newGuests);
-		existingGuests = UpdateQueries.updateGuestsRoom(existingGuests); //TODO: Finish query
+		for (int i = 0; i < newGuests.size(); i++)
+		{
+			Guest newGuest = newGuests.get(i);
+			for (int j = 0; j < incomingGuests.size(); j++)
+			{
+				if (newGuest.getFirstName().equals(incomingGuests.get(j).getFirstName()) && newGuest.getLastName().equals(incomingGuests.get(j).getLastName()))
+				{
+					incomingReservation.getGuests().get(j).setId(newGuest.getId());
+				}
+			}
+		}
+		UpdateQueries.updateGuestsRoom(existingGuests);
+
+		String guestIds = "";
+		for (int i = 0; i < incomingReservation.getGuests().size(); i++)
+		{
+			guestIds += incomingReservation.getGuests().get(i).getId();
+			if (i < incomingReservation.getGuests().size()-1)
+			{
+				guestIds += ",";
+			}
+		}
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String insertReservation = "INSERT INTO " + RESERVATIONS_TABLE_NAME + "(" + CHECK_IN_COLUMN + "," + CHECK_OUT_COLUMN + "," + USER_ID_COLUMN + "," + GUEST_IDS_COLUMN + ") VALUES ('" + sdf.format(incomingReservation.getCheckIn()) + "', '" + sdf.format(incomingReservation.getCheckOut()) + "', " + incomingReservation.getUser().getId() + ",'" + guestIds + "')";
 
 		try
 		{
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
 			Statement statement = connection.createStatement();
-			String insertReservation = "INSERT INTO " + RESERVATIONS_TABLE_NAME + "(" + CHECK_IN_COLUMN + "," + CHECK_OUT_COLUMN + "," + ROOM_ID_COLUMN + ") VALUES('" + sdf.format(incomingReservation.getCheckIn()) + "', '" + sdf.format(incomingReservation.getCheckOut()) + "', '" + 1 + "')"; //TODO: UPDATE QUERY TO FIT NEW REQUIREMENTS
 
 			statement.execute(insertReservation);
 			connection.commit();

@@ -434,11 +434,11 @@ public class SelectQueries extends StoreComponent
 
 	public static List<Guest> checkGuestExistance(List<Guest> guests)
 	{
-		String selectGuestsByLegalName = "SELECT * FROM " + GUESTS_TABLE_NAME + " WHERE " + FIRST_NAME_COLUMN + " || ' ' || " + LAST_NAME_COLUMN + " IN (";
+		String selectGuestsByLegalName = "SELECT * FROM " + GUESTS_TABLE_NAME + " WHERE (" + FIRST_NAME_COLUMN + " || ' ' || " + LAST_NAME_COLUMN + ") IN (";
 		for (int i = 0; i < guests.size(); i++)
 		{
 			Guest guest = guests.get(i);
-			selectGuestsByLegalName += guest.getFirstName() + " " + guest.getLastName();
+			selectGuestsByLegalName += "'" + guest.getFirstName() + " " + guest.getLastName() + "'";
 			
 			if (i < guests.size()-1)
 			{
@@ -446,7 +446,6 @@ public class SelectQueries extends StoreComponent
 			}
 		}
 		selectGuestsByLegalName += ")";
-		System.out.println(selectGuestsByLegalName);
 
 		try
 		{
@@ -459,8 +458,9 @@ public class SelectQueries extends StoreComponent
 				int id = results.getInt(ID_COLUMN);
 				String firstName = results.getString(FIRST_NAME_COLUMN);
 				String lastName = results.getString(LAST_NAME_COLUMN);
+				int roomId = results.getInt(ROOM_ID_COLUMN);
 
-				resultList.add(new Guest(id, firstName, lastName));
+				resultList.add(new Guest(id, firstName, lastName, new Room(roomId)));
 			}
 
 			return resultList;

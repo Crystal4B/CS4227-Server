@@ -6,9 +6,15 @@ import java.util.List;
 
 import dev.platinum.hotel.types.Guest;
 
+/**
+ * UpdateQueries class handles all update queries for the store
+ */
 public class UpdateQueries extends StoreComponent
 {
-
+	/**
+	 * Update function for changing the Guest roomId
+	 * @param existingGuests the list of guests being updated
+	 */
 	public static void updateGuestsRoom(List<Guest> existingGuests)
 	{
 		if (existingGuests.size() == 0)

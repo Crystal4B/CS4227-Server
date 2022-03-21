@@ -4,8 +4,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
+import dev.platinum.hotel.types.Guest;
 import dev.platinum.hotel.types.Reservation;
 import dev.platinum.hotel.types.Room;
 import dev.platinum.hotel.types.User;
@@ -23,12 +25,61 @@ public class InsertQueries extends StoreComponent
 	 */
 	public static Reservation insertReservation(Reservation incomingReservation)
 	{
+		List<Guest> incomingGuests = incomingReservation.getGuests();
+		List<Guest> existingGuests = SelectQueries.checkGuestExistance(incomingGuests);
+		List<Guest> newGuests = new ArrayList<>(); // Move to helper function
+		for (int i = 0; i < incomingGuests.size(); i++)
+		{
+			Guest incomingGuest = incomingGuests.get(i);
+			boolean exists = false;
+
+			for (int j = 0; j < existingGuests.size(); j++)
+			{
+				Guest existingGuest = existingGuests.get(j);
+				if (incomingGuest.getFirstName().equals(existingGuest.getFirstName()) && incomingGuest.getLastName().equals(existingGuest.getLastName())) 
+				{
+					incomingGuests.get(i).setId(existingGuest.getId()); // Set Id for return
+					exists = true;
+					break;
+				}
+			}
+
+			if (!exists)
+			{
+				newGuests.add(incomingGuest);
+			}
+		}
+
+		newGuests = InsertQueries.insertGuests(newGuests);
+		for (int i = 0; i < newGuests.size(); i++)
+		{
+			Guest newGuest = newGuests.get(i);
+			for (int j = 0; j < incomingGuests.size(); j++)
+			{
+				if (newGuest.getFirstName().equals(incomingGuests.get(j).getFirstName()) && newGuest.getLastName().equals(incomingGuests.get(j).getLastName()))
+				{
+					incomingReservation.getGuests().get(j).setId(newGuest.getId());
+				}
+			}
+		}
+		UpdateQueries.updateGuestsRoom(existingGuests);
+
+		String guestIds = "";
+		for (int i = 0; i < incomingReservation.getGuests().size(); i++)
+		{
+			guestIds += incomingReservation.getGuests().get(i).getId();
+			if (i < incomingReservation.getGuests().size()-1)
+			{
+				guestIds += ",";
+			}
+		}
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String insertReservation = "INSERT INTO " + RESERVATIONS_TABLE_NAME + "(" + CHECK_IN_COLUMN + "," + CHECK_OUT_COLUMN + "," + USER_ID_COLUMN + "," + GUEST_IDS_COLUMN + ") VALUES ('" + sdf.format(incomingReservation.getCheckIn()) + "', '" + sdf.format(incomingReservation.getCheckOut()) + "', " + incomingReservation.getUser().getId() + ",'" + guestIds + "')";
+
 		try
 		{
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
 			Statement statement = connection.createStatement();
-			String insertReservation = "INSERT INTO " + RESERVATIONS_TABLE_NAME + "(" + CHECK_IN_COLUMN + "," + CHECK_OUT_COLUMN + "," + ROOM_ID_COLUMN + ") VALUES('" + sdf.format(incomingReservation.getCheckIn()) + "', '" + sdf.format(incomingReservation.getCheckOut()) + "', '" + 1 + "')"; //TODO: UPDATE QUERY TO FIT NEW REQUIREMENTS
 
 			statement.execute(insertReservation);
 			connection.commit();
@@ -45,6 +96,46 @@ public class InsertQueries extends StoreComponent
 			System.out.println(e);
 		}
 		return null;
+	}
+
+	private static List<Guest> insertGuests(List<Guest> newGuests)
+	{
+		try
+		{
+			Statement statement = connection.createStatement();
+			
+			for (int i = 0; i < newGuests.size(); i++)
+			{
+				Guest newGuest = newGuests.get(i);
+
+				String insertGuests = "INSERT INTO " + GUESTS_TABLE_NAME + "(" + FIRST_NAME_COLUMN + "," + LAST_NAME_COLUMN + "," + ROOM_ID_COLUMN + ") VALUES ('" + newGuest.getFirstName() + "','" + newGuest.getLastName() + "'," + newGuest.getRoom().getId() + ")";
+				statement.addBatch(insertGuests);
+			}
+
+			statement.executeBatch();
+			connection.commit();
+
+			// generatedKeys holds last key inserted
+			ResultSet keys = statement.getGeneratedKeys();
+			int lastKey = -1;
+			while (keys.next())
+			{
+				lastKey = (int) keys.getLong(1);
+			}
+
+			// as No IDs are specified in create query we can calculate generated IDS based on lastKey inserted and number of Rooms inserted
+			for (int i = newGuests.size() - 1; i >= 0; i--)
+			{
+				newGuests.get(i).setId(lastKey - (newGuests.size() - 1 - i));
+			}
+			return newGuests;
+		}
+		catch(SQLException e)
+		{
+			System.out.println(e);
+		}
+
+		return new ArrayList<>();
 	}
 
 	/**

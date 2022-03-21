@@ -64,10 +64,10 @@ input GuestInput
 input ReservationInput
 {
 	id: ID
-	checkIn: Date!
-	checkOut: Date!
-	user: UserInput!
-	guests: [GuestInput]!
+	checkIn: Date
+	checkOut: Date
+	user: UserInput
+	guests: [GuestInput]
 }
 
 input RoomInput

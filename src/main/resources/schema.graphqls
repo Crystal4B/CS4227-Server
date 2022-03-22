@@ -82,6 +82,7 @@ input RoomInput
 type Query
 {
 	reservationById(id: ID!): Reservation
+	reservationsByUser(input: UserInput!): [Reservation]
 	allRooms: [Room]
 	roomById(id: ID!): Room
 	availableRoomsByDates(checkIn: Date!, checkOut: Date!): [Room]

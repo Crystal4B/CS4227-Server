@@ -2,6 +2,7 @@ package dev.platinum.hotel;
 
 import org.springframework.stereotype.Component;
 
+import dev.platinum.hotel.exceptions.UserAlreadyExistsException;
 import dev.platinum.hotel.store.DeleteQueries;
 import dev.platinum.hotel.store.InsertQueries;
 import dev.platinum.hotel.store.SelectQueries;
@@ -9,6 +10,7 @@ import dev.platinum.hotel.types.Guest;
 import dev.platinum.hotel.types.Reservation;
 import dev.platinum.hotel.types.Room;
 import dev.platinum.hotel.types.User;
+import graphql.GraphQLException;
 import graphql.schema.DataFetcher;
 
 import java.sql.Timestamp;
@@ -32,6 +34,23 @@ public class GraphQLDataFetchers
 		return dataFetchingEnvironment -> {
 			int reservationId = dataFetchingEnvironment.getArgument("id");
 			return SelectQueries.selectReservationById(reservationId);
+		};
+	}
+
+	/**
+	 * The DataFetcher handling ReservationsByUser requests
+	 * @return a List of Reservations visible to the user
+	 */
+	public DataFetcher<List<Reservation>> getReservationsByUserDataFetcher()
+	{
+		return dataFetchingEnvironment -> {
+			Map<String, Object> data = dataFetchingEnvironment.getArgument("input");
+			int id = Integer.parseInt((String) data.get("id"));
+			String type = (String) data.get("type");
+			String email = (String) data.get("email");
+			User user = new User(id, type, email);
+
+			return SelectQueries.selectReservationsByUser(user);
 		};
 	}
 
@@ -70,6 +89,13 @@ public class GraphQLDataFetchers
 			Map<String, Object> data = dataFetchingEnvironment.getArgument("input");
 			String email = (String) data.get("email");
 			String password = (String) data.get("password");
+
+			User user = SelectQueries.selectUserByLogin(new User(email, password));
+			if (user == null)
+			{
+				throw new GraphQLException("Login attempt failed");
+			}
+
 			return SelectQueries.selectUserByLogin(new User(email, password));
 		};
 	}

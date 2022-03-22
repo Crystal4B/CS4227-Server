@@ -98,6 +98,11 @@ public class InsertQueries extends StoreComponent
 		return null;
 	}
 
+	/**
+	 * Query for inserting newGuests into the system
+	 * @param newGuests list of guests to be inserted
+	 * @return updated lists of guests 
+	 */
 	private static List<Guest> insertGuests(List<Guest> newGuests)
 	{
 		try

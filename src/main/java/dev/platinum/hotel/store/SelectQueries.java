@@ -378,6 +378,10 @@ public class SelectQueries extends StoreComponent
 		return null;
 	}
 
+	/**
+	 * Query for selecting all rooms in the database
+	 * @return list of rooms in the database
+	 */
 	public static List<Room> selectAllRooms()
 	{
 		String selectAllRooms = "SELECT * FROM " + ROOMS_TABLE_NAME;
@@ -432,6 +436,11 @@ public class SelectQueries extends StoreComponent
 		return false;
 	}
 
+	/**
+	 * Query for checking if guests exist
+	 * @param guests list of guests to be checked
+	 * @return updated list of guests with their database ids
+	 */
 	public static List<Guest> checkGuestExistance(List<Guest> guests)
 	{
 		String selectGuestsByLegalName = "SELECT * FROM " + GUESTS_TABLE_NAME + " WHERE (" + FIRST_NAME_COLUMN + " || ' ' || " + LAST_NAME_COLUMN + ") IN (";
@@ -472,4 +481,48 @@ public class SelectQueries extends StoreComponent
 
 		return new ArrayList<>();
 	}
+
+	/**
+	 * Query for selecting a list of reservations that are visible to a specific user
+	 * @param user the user trying to see reservations
+	 * @return the list of reservations visible
+	 */
+    public static List<Reservation> selectReservationsByUser(User user)
+	{
+		String selectReservationsByUser = "SELECT * FROM " + RESERVATIONS_TABLE_NAME;
+		if (!user.getType().equals("Staff"))
+		{
+			selectReservationsByUser += " WHERE " + USER_ID_COLUMN + "=" + user.getId(); 
+		}
+
+		try
+		{
+			Statement statement = connection.createStatement();
+			ResultSet results = statement.executeQuery(selectReservationsByUser);
+
+			List<Reservation> reservations = new ArrayList<>();
+			while (results.next())
+			{
+				int id = results.getInt(ID_COLUMN);
+
+				// results.getTimestamp("column_name") returns 1970-01-01
+				Timestamp checkIn = Timestamp.valueOf((String) results.getObject(CHECK_IN_COLUMN));
+				Timestamp checkOut = Timestamp.valueOf((String) results.getObject(CHECK_OUT_COLUMN));
+				
+				String guestIds = results.getString(GUEST_IDS_COLUMN);
+				int guestIdsArr[] = Arrays.stream(guestIds.split(",")).mapToInt(Integer::parseInt).toArray();
+				List<Guest> guests = selectGuestsByIds(guestIdsArr);
+
+				Reservation reservation = new Reservation(id, checkIn, checkOut, user, guests);
+				reservations.add(reservation);
+			}
+			return reservations;
+		}
+		catch(SQLException e)
+		{
+			System.out.println(e);
+		}
+
+        return new ArrayList<>();
+    }
 }

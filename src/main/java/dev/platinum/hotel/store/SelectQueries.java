@@ -29,7 +29,7 @@ public class SelectQueries extends StoreComponent
 		try
 		{
 			Statement statement = connection.createStatement();
-			String selectReservation = "SELECT * FROM " + RESERVATIONS_TABLE_NAME + " INNER JOIN " + USERS_TABLE_NAME + " ON " + USERS_TABLE_NAME + "." + ID_COLUMN + "=" + RESERVATIONS_TABLE_NAME + "." + USER_ID_COLUMN + " WHERE " + ID_COLUMN + " = " + reservationId;
+			String selectReservation = "SELECT * FROM " + RESERVATIONS_TABLE_NAME + " INNER JOIN " + USERS_TABLE_NAME + " ON " + USERS_TABLE_NAME + "." + ID_COLUMN + "=" + RESERVATIONS_TABLE_NAME + "." + USER_ID_COLUMN + " WHERE " + RESERVATIONS_TABLE_NAME + "." + ID_COLUMN + " = " + reservationId;
 			ResultSet results = statement.executeQuery(selectReservation);
 			if (results.next())
 			{
@@ -227,7 +227,7 @@ public class SelectQueries extends StoreComponent
 	 */
 	public static List<Room> selectOccupiedRoomsByGuestIds(int ids[])
 	{
-		String selectRoomsByGuests = "SELECT " + ROOM_ID_COLUMN + "," + TYPE_COLUMN + "," + PERKS_COLUMN + "," + NUMBER_OF_BEDS_COLUMN + "," + RATE_COLUMN + " FROM " + GUESTS_TABLE_NAME + " INNER JOIN " + ROOMS_TABLE_NAME + " ON " + ROOMS_TABLE_NAME + "." + ID_COLUMN + "=" + GUESTS_TABLE_NAME + "." + ROOM_ID_COLUMN + " WHERE " + ID_COLUMN + " IN (";
+		String selectRoomsByGuests = "SELECT " + ROOM_ID_COLUMN + "," + TYPE_COLUMN + "," + PERKS_COLUMN + "," + NUMBER_OF_BEDS_COLUMN + "," + RATE_COLUMN + " FROM " + GUESTS_TABLE_NAME + " INNER JOIN " + ROOMS_TABLE_NAME + " ON " + ROOMS_TABLE_NAME + "." + ID_COLUMN + "=" + GUESTS_TABLE_NAME + "." + ROOM_ID_COLUMN + " WHERE " + GUESTS_TABLE_NAME + "." + ID_COLUMN + " IN (";
 		for (int i = 0; i < ids.length; i++)
 		{
 			selectRoomsByGuests += ids[i];
@@ -302,7 +302,7 @@ public class SelectQueries extends StoreComponent
 	 */
 	public static List<Guest> selectGuestsByIds(int ids[])
 	{
-		String selectRoomsByGuests = "SELECT * FROM " + GUESTS_TABLE_NAME + " INNER JOIN " + ROOMS_TABLE_NAME + " ON " + ROOMS_TABLE_NAME + "." + ID_COLUMN + "=" + GUESTS_TABLE_NAME + "." + ROOM_ID_COLUMN + " WHERE " + ID_COLUMN + " IN (";
+		String selectRoomsByGuests = "SELECT * FROM " + GUESTS_TABLE_NAME + " INNER JOIN " + ROOMS_TABLE_NAME + " ON " + ROOMS_TABLE_NAME + "." + ID_COLUMN + "=" + GUESTS_TABLE_NAME + "." + ROOM_ID_COLUMN + " WHERE " + GUESTS_TABLE_NAME + "." + ID_COLUMN + " IN (";
 		for (int i = 0; i < ids.length; i++)
 		{
 			selectRoomsByGuests += ids[i];
@@ -489,7 +489,7 @@ public class SelectQueries extends StoreComponent
 	 */
     public static List<Reservation> selectReservationsByUser(User user)
 	{
-		String selectReservationsByUser = "SELECT * FROM " + RESERVATIONS_TABLE_NAME;
+		String selectReservationsByUser = "SELECT * FROM " + RESERVATIONS_TABLE_NAME + " INNER JOIN " + USERS_TABLE_NAME + " ON " + USERS_TABLE_NAME + "." + ID_COLUMN + "=" + RESERVATIONS_TABLE_NAME + "." + USER_ID_COLUMN;
 		if (!user.getType().equals("Staff"))
 		{
 			selectReservationsByUser += " WHERE " + USER_ID_COLUMN + "=" + user.getId(); 

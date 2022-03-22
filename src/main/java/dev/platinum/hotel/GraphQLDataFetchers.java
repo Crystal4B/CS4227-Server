@@ -2,7 +2,6 @@ package dev.platinum.hotel;
 
 import org.springframework.stereotype.Component;
 
-import dev.platinum.hotel.exceptions.UserAlreadyExistsException;
 import dev.platinum.hotel.store.DeleteQueries;
 import dev.platinum.hotel.store.InsertQueries;
 import dev.platinum.hotel.store.SelectQueries;

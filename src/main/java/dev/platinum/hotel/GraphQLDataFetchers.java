@@ -9,7 +9,6 @@ import dev.platinum.hotel.types.Guest;
 import dev.platinum.hotel.types.Reservation;
 import dev.platinum.hotel.types.Room;
 import dev.platinum.hotel.types.User;
-import graphql.GraphQLException;
 import graphql.schema.DataFetcher;
 
 import java.sql.Timestamp;
@@ -88,12 +87,6 @@ public class GraphQLDataFetchers
 			Map<String, Object> data = dataFetchingEnvironment.getArgument("input");
 			String email = (String) data.get("email");
 			String password = (String) data.get("password");
-
-			User user = SelectQueries.selectUserByLogin(new User(email, password));
-			if (user == null)
-			{
-				throw new GraphQLException("Login attempt failed");
-			}
 
 			return SelectQueries.selectUserByLogin(new User(email, password));
 		};

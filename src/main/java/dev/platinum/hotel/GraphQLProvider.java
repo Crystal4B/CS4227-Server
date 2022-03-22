@@ -68,6 +68,8 @@ public class GraphQLProvider
 			.type(newTypeWiring("Query")
 				.dataFetcher("reservationById", graphQLDataFetchers.getReservationByIdDataFetcher()))
 			.type(newTypeWiring("Query")
+				.dataFetcher("reservationsByUser", graphQLDataFetchers.getReservationsByUserDataFetcher()))
+			.type(newTypeWiring("Query")
 				.dataFetcher("allRooms", graphQLDataFetchers.getAllRooms()))
 			.type(newTypeWiring("Query")
 				.dataFetcher("roomById", graphQLDataFetchers.getRoomByIdDataFetcher()))

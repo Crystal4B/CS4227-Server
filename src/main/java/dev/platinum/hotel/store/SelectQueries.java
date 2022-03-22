@@ -29,7 +29,7 @@ public class SelectQueries extends StoreComponent
 		try
 		{
 			Statement statement = connection.createStatement();
-			String selectReservation = "SELECT * FROM " + RESERVATIONS_TABLE_NAME + " INNER JOIN " + USERS_TABLE_NAME + " ON " + USERS_TABLE_NAME + "." + ID_COLUMN + "=" + RESERVATIONS_TABLE_NAME + "." + USER_ID_COLUMN + " WHERE " + ID_COLUMN + " = " + reservationId;
+			String selectReservation = "SELECT * FROM " + RESERVATIONS_TABLE_NAME + " INNER JOIN " + USERS_TABLE_NAME + " ON " + USERS_TABLE_NAME + "." + ID_COLUMN + "=" + RESERVATIONS_TABLE_NAME + "." + USER_ID_COLUMN + " WHERE " + RESERVATIONS_TABLE_NAME + "." + ID_COLUMN + " = " + reservationId;
 			ResultSet results = statement.executeQuery(selectReservation);
 			if (results.next())
 			{
@@ -227,7 +227,7 @@ public class SelectQueries extends StoreComponent
 	 */
 	public static List<Room> selectOccupiedRoomsByGuestIds(int ids[])
 	{
-		String selectRoomsByGuests = "SELECT " + ROOM_ID_COLUMN + "," + TYPE_COLUMN + "," + PERKS_COLUMN + "," + NUMBER_OF_BEDS_COLUMN + "," + RATE_COLUMN + " FROM " + GUESTS_TABLE_NAME + " INNER JOIN " + ROOMS_TABLE_NAME + " ON " + ROOMS_TABLE_NAME + "." + ID_COLUMN + "=" + GUESTS_TABLE_NAME + "." + ROOM_ID_COLUMN + " WHERE " + ID_COLUMN + " IN (";
+		String selectRoomsByGuests = "SELECT " + ROOM_ID_COLUMN + "," + TYPE_COLUMN + "," + PERKS_COLUMN + "," + NUMBER_OF_BEDS_COLUMN + "," + RATE_COLUMN + " FROM " + GUESTS_TABLE_NAME + " INNER JOIN " + ROOMS_TABLE_NAME + " ON " + ROOMS_TABLE_NAME + "." + ID_COLUMN + "=" + GUESTS_TABLE_NAME + "." + ROOM_ID_COLUMN + " WHERE " + GUESTS_TABLE_NAME + "." + ID_COLUMN + " IN (";
 		for (int i = 0; i < ids.length; i++)
 		{
 			selectRoomsByGuests += ids[i];
@@ -302,7 +302,7 @@ public class SelectQueries extends StoreComponent
 	 */
 	public static List<Guest> selectGuestsByIds(int ids[])
 	{
-		String selectRoomsByGuests = "SELECT * FROM " + GUESTS_TABLE_NAME + " INNER JOIN " + ROOMS_TABLE_NAME + " ON " + ROOMS_TABLE_NAME + "." + ID_COLUMN + "=" + GUESTS_TABLE_NAME + "." + ROOM_ID_COLUMN + " WHERE " + ID_COLUMN + " IN (";
+		String selectRoomsByGuests = "SELECT * FROM " + GUESTS_TABLE_NAME + " INNER JOIN " + ROOMS_TABLE_NAME + " ON " + ROOMS_TABLE_NAME + "." + ID_COLUMN + "=" + GUESTS_TABLE_NAME + "." + ROOM_ID_COLUMN + " WHERE " + GUESTS_TABLE_NAME + "." + ID_COLUMN + " IN (";
 		for (int i = 0; i < ids.length; i++)
 		{
 			selectRoomsByGuests += ids[i];
@@ -378,6 +378,10 @@ public class SelectQueries extends StoreComponent
 		return null;
 	}
 
+	/**
+	 * Query for selecting all rooms in the database
+	 * @return list of rooms in the database
+	 */
 	public static List<Room> selectAllRooms()
 	{
 		String selectAllRooms = "SELECT * FROM " + ROOMS_TABLE_NAME;
@@ -432,6 +436,11 @@ public class SelectQueries extends StoreComponent
 		return false;
 	}
 
+	/**
+	 * Query for checking if guests exist
+	 * @param guests list of guests to be checked
+	 * @return updated list of guests with their database ids
+	 */
 	public static List<Guest> checkGuestExistance(List<Guest> guests)
 	{
 		String selectGuestsByLegalName = "SELECT * FROM " + GUESTS_TABLE_NAME + " WHERE (" + FIRST_NAME_COLUMN + " || ' ' || " + LAST_NAME_COLUMN + ") IN (";
@@ -472,4 +481,48 @@ public class SelectQueries extends StoreComponent
 
 		return new ArrayList<>();
 	}
+
+	/**
+	 * Query for selecting a list of reservations that are visible to a specific user
+	 * @param user the user trying to see reservations
+	 * @return the list of reservations visible
+	 */
+    public static List<Reservation> selectReservationsByUser(User user)
+	{
+		String selectReservationsByUser = "SELECT * FROM " + RESERVATIONS_TABLE_NAME + " INNER JOIN " + USERS_TABLE_NAME + " ON " + USERS_TABLE_NAME + "." + ID_COLUMN + "=" + RESERVATIONS_TABLE_NAME + "." + USER_ID_COLUMN;
+		if (!user.getType().equals("Staff"))
+		{
+			selectReservationsByUser += " WHERE " + USER_ID_COLUMN + "=" + user.getId(); 
+		}
+
+		try
+		{
+			Statement statement = connection.createStatement();
+			ResultSet results = statement.executeQuery(selectReservationsByUser);
+
+			List<Reservation> reservations = new ArrayList<>();
+			while (results.next())
+			{
+				int id = results.getInt(ID_COLUMN);
+
+				// results.getTimestamp("column_name") returns 1970-01-01
+				Timestamp checkIn = Timestamp.valueOf((String) results.getObject(CHECK_IN_COLUMN));
+				Timestamp checkOut = Timestamp.valueOf((String) results.getObject(CHECK_OUT_COLUMN));
+				
+				String guestIds = results.getString(GUEST_IDS_COLUMN);
+				int guestIdsArr[] = Arrays.stream(guestIds.split(",")).mapToInt(Integer::parseInt).toArray();
+				List<Guest> guests = selectGuestsByIds(guestIdsArr);
+
+				Reservation reservation = new Reservation(id, checkIn, checkOut, user, guests);
+				reservations.add(reservation);
+			}
+			return reservations;
+		}
+		catch(SQLException e)
+		{
+			System.out.println(e);
+		}
+
+        return new ArrayList<>();
+    }
 }

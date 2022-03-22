@@ -22,10 +22,10 @@ public class UpdateQueries extends StoreComponent
 			return;
 		}
 
-		String updateGuestsRoomIds = "UPDATE " + GUESTS_TABLE_NAME + " SET " + ROOM_ID_COLUMN + "(CASE " + ID_COLUMN;
+		String updateGuestsRoomIds = "UPDATE " + GUESTS_TABLE_NAME + " SET " + ROOM_ID_COLUMN + " = (CASE " + ID_COLUMN;
 		for (Guest guest : existingGuests)
 		{
-			updateGuestsRoomIds += "WHEN " + guest.getId() + " THEN " + guest.getRoom().getId() + " ";
+			updateGuestsRoomIds += " WHEN " + guest.getId() + " THEN " + guest.getRoom().getId() + " ";
 		}
 		updateGuestsRoomIds += "ELSE " + ROOM_ID_COLUMN + " END)";
 

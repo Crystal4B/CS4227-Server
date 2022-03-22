@@ -36,6 +36,23 @@ public class GraphQLDataFetchers
 	}
 
 	/**
+	 * The DataFetcher handling ReservationsByUser requests
+	 * @return a List of Reservations visible to the user
+	 */
+	public DataFetcher<List<Reservation>> getReservationsByUserDataFetcher()
+	{
+		return dataFetchingEnvironment -> {
+			Map<String, Object> data = dataFetchingEnvironment.getArgument("input");
+			int id = Integer.parseInt((String) data.get("id"));
+			String type = (String) data.get("type");
+			String email = (String) data.get("email");
+			User user = new User(id, type, email);
+
+			return SelectQueries.selectReservationsByUser(user);
+		};
+	}
+
+	/**
 	 * The DataFetcher handling RoomById requests
 	 * @return a Room Object or null if not found
 	 */
@@ -70,6 +87,7 @@ public class GraphQLDataFetchers
 			Map<String, Object> data = dataFetchingEnvironment.getArgument("input");
 			String email = (String) data.get("email");
 			String password = (String) data.get("password");
+
 			return SelectQueries.selectUserByLogin(new User(email, password));
 		};
 	}

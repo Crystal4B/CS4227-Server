@@ -12,6 +12,7 @@ public class Reservation
 	private int id;
 	private Timestamp checkIn;
 	private Timestamp checkOut;
+	private boolean paid;
 	private User user;
 	private List<Guest> guests;
 
@@ -41,7 +42,7 @@ public class Reservation
 	}
 
 	/**
-	 * Constructor using arrivalDate, departureDate and rooms
+	 * Constructor using checkIn, checkOut and rooms
 	 * @param id the id of the reservation in the database
 	 * @param checkIn the check-in date of the reservation
 	 * @param checkOut the check-out date of the reservation
@@ -55,6 +56,21 @@ public class Reservation
 	}
 
 	/**
+	 * Constructor creating a complete reservation object
+	 * @param id of the reservation in the database
+	 * @param checkIn date of the reservation
+	 * @param checkOut date of the reservation
+	 * @param user who made the reservation
+	 * @param guests staying in the hotel in this reservation
+	 * @param paid whether the reservation is paid or not
+	 */
+	public Reservation(int id, Timestamp checkIn, Timestamp checkOut, User user, List<Guest> guests, boolean paid)
+	{
+		this(id, checkIn, checkOut, user, guests);
+		this.paid = paid;
+    }
+
+    /**
 	 * Simple id getter
 	 * @return id of reservation as int
 	 */
@@ -79,6 +95,15 @@ public class Reservation
 	public Timestamp getCheckOut()
 	{
 		return this.checkOut;
+	}
+
+	/**
+	 * Simple paid getter
+	 * @return paid as boolean
+	 */
+	public boolean getPaid()
+	{
+		return this.paid;
 	}
 
 	/**
@@ -124,6 +149,15 @@ public class Reservation
 	public void setCheckOut(Timestamp newDate)
 	{
 		this.checkOut = newDate;
+	}
+
+	/**
+	 * Simple paid setter
+	 * @param newPaid desired paid state for reservation
+	 */
+	public void setPaid(boolean newPaid)
+	{
+		this.paid = newPaid;
 	}
 
 	/**

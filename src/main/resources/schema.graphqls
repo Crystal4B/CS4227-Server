@@ -24,6 +24,7 @@ type Reservation
 	checkOut: Date!
 	user: User
 	guests: [Guest]
+	paid: Boolean
 }
 
 type Room
@@ -68,6 +69,7 @@ input ReservationInput
 	checkOut: Date
 	user: UserInput
 	guests: [GuestInput]
+	paid: Boolean
 }
 
 input RoomInput
@@ -87,11 +89,13 @@ type Query
 	roomById(id: ID!): Room
 	availableRoomsByDates(checkIn: Date!, checkOut: Date!): [Room]
 	loginUser(input: UserInput): User
+
 }
 
 type Mutation
 {
 	createReservation(input: ReservationInput): Reservation
+	updateReservationPaid(input: ReservationInput): Reservation
 	removeReservation(input: ReservationInput): Reservation
 	createRoom(input: RoomInput): Room
 	createRooms(input: [RoomInput]): [Room]

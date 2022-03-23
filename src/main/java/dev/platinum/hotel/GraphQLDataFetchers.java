@@ -97,7 +97,6 @@ public class GraphQLDataFetchers
 	 * The DataFetcher handling createReservations requests
 	 * @return the inserted Reservation Object or null if unsuccessful
 	 */
-	@SuppressWarnings("unchecked")
 	public DataFetcher<Reservation> createReservation()
 	{
 		return dataFetchingEnvironment -> {
@@ -105,18 +104,20 @@ public class GraphQLDataFetchers
 			Timestamp checkIn = (Timestamp) data.get("checkIn");
 			Timestamp checkOut = (Timestamp) data.get("checkOut");
 
-			Map<String, String> userMap = (Map<String, String>) data.get("user");
-			int userId = Integer.parseInt(userMap.get("id"));
+			Map<?, ?> userMap = (Map<?, ?>) data.get("user");
+			int userId = Integer.parseInt((String) userMap.get("id"));
 			User user = new User(userId);
 
-			List<Map<String, String>> guestsMap = (List<Map<String, String>>) data.get("guests");
+			List<?> guestsList = (List<?>) data.get("guests");
 			List<Guest> guests = new ArrayList<>();
-			for (Map<String, String> map : guestsMap)
+			for (int i = 0; i < guestsList.size(); i++)
 			{
+				Map<?, ?> guestMap = (Map<?, ?>) guestsList.get(i);
+
 				// Get Mandatory fields
-				String firstName = map.get("firstName");
-				String lastName = map.get("lastName");
-				int roomId = Integer.parseInt(map.get("roomId"));
+				String firstName = (String) guestMap.get("firstName");
+				String lastName = (String) guestMap.get("lastName");
+				int roomId = Integer.parseInt((String) guestMap.get("roomId"));
 
 				Guest guest = new Guest(firstName, lastName, new Room(roomId));
 

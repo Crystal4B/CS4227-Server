@@ -177,11 +177,4 @@ public class Reservation
 	{
 		this.guests = newGuests;
 	}
-
-	@Override
-	public String toString()
-	{
-		// TODO: Add Rooms to String here
-		return String.format("%s, %s, %s, %s, %d", id, checkIn, checkOut);
-	}
 }

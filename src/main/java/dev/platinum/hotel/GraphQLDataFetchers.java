@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import dev.platinum.hotel.store.DeleteQueries;
 import dev.platinum.hotel.store.InsertQueries;
 import dev.platinum.hotel.store.SelectQueries;
+import dev.platinum.hotel.store.UpdateQueries;
 import dev.platinum.hotel.types.Guest;
 import dev.platinum.hotel.types.Reservation;
 import dev.platinum.hotel.types.Room;
@@ -263,6 +264,17 @@ public class GraphQLDataFetchers
 	{
 		return dataFetchingEnvironment -> {
 			return SelectQueries.selectAllRooms();
+		};
+	}
+
+	public DataFetcher<Reservation> updateReservationPaid()
+	{
+		return dataFetchingEnvironment -> {
+			Map<String, Object> data = dataFetchingEnvironment.getArgument("input");
+			int id = Integer.parseInt((String) data.get("id"));
+			boolean paid = (boolean) data.get("paid");
+
+			return UpdateQueries.updateReservationPaid(id, paid);
 		};
 	}
 }

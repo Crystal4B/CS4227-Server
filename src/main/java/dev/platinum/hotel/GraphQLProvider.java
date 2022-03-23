@@ -80,6 +80,8 @@ public class GraphQLProvider
 			.type(newTypeWiring("Mutation")
 				.dataFetcher("createReservation", graphQLDataFetchers.createReservation()))
 			.type(newTypeWiring("Mutation")
+				.dataFetcher("updateReservationPaid", graphQLDataFetchers.updateReservationPaid()))
+			.type(newTypeWiring("Mutation")
 				.dataFetcher("removeReservation", graphQLDataFetchers.removeReservation()))
 			.type(newTypeWiring("Mutation")
 				.dataFetcher("createRoom", graphQLDataFetchers.createRoom()))

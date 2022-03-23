@@ -508,12 +508,19 @@ public class SelectQueries extends StoreComponent
 				// results.getTimestamp("column_name") returns 1970-01-01
 				Timestamp checkIn = Timestamp.valueOf((String) results.getObject(CHECK_IN_COLUMN));
 				Timestamp checkOut = Timestamp.valueOf((String) results.getObject(CHECK_OUT_COLUMN));
+
+				int userId = results.getInt(USER_ID_COLUMN);
+				String type = results.getString(TYPE_COLUMN);
+				String username = results.getString(USERNAME_COLUMN);
+				String email = results.getString(EMAIL_COLUMN);
+
+				User resultUser = new User(userId, type, email, username);
 				
 				String guestIds = results.getString(GUEST_IDS_COLUMN);
 				int guestIdsArr[] = Arrays.stream(guestIds.split(",")).mapToInt(Integer::parseInt).toArray();
 				List<Guest> guests = selectGuestsByIds(guestIdsArr);
 
-				Reservation reservation = new Reservation(id, checkIn, checkOut, user, guests);
+				Reservation reservation = new Reservation(id, checkIn, checkOut, resultUser, guests);
 				reservations.add(reservation);
 			}
 			return reservations;

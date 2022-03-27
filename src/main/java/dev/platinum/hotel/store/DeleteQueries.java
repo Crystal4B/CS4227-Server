@@ -12,6 +12,7 @@ import dev.platinum.hotel.types.Guest;
 import dev.platinum.hotel.types.Reservation;
 import dev.platinum.hotel.types.Room;
 import dev.platinum.hotel.types.User;
+import dev.platinum.hotel.types.Voucher;
 
 /**
  * Store class for hanadling delete queries
@@ -52,6 +53,43 @@ public class DeleteQueries extends StoreComponent
 			System.out.println(e);
 		}
 
+		return null;
+	}
+
+	public static Voucher removeVoucher(int voucherId)
+	{
+		try
+		{
+			Statement statement = connection.createStatement();
+			String deleteVoucher = "DELETE FROM " + VOUCHER_TABLE_NAME + " WHERE " + ID_COLUMN + "=" + "'" + voucherId + "'" + ") RETURNING *";
+			ResultSet results = statement.executeQuery(deleteVoucher);
+			if (results.next())
+			{
+				int id = results.getInt(ID_COLUMN);
+				String type = results.getString(TYPE_COLUMN);
+				double amount = results.getDouble(AMOUNT_COLUMN);
+				Timestamp issue_date = results.getTimestamp(ISSUE_DATE_COLUMN);
+				Timestamp expiry_date = results.getTimestamp(EXPIRY_DATE_COLUMN) ;
+				
+				int userId = results.getInt(USER_ID_COLUMN);
+				String typeU = results.getString(TYPE_COLUMN);
+				String email = results.getString(EMAIL_COLUMN);
+				String username = results.getString(USERNAME_COLUMN);
+				User creator = new User(userId, typeU, email, username);
+
+				int reservationId = results.getInt(RESERVATION_ID_COLUMN);
+
+				Reservation available = new Reservation(reservationId);
+
+				Voucher voucherBoi = new Voucher(id,issue_date, expiry_date, type, amount, creator, available);
+				results.close();				
+				return voucherBoi;
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println(e);
+		}
 		return null;
 	}
 

@@ -16,6 +16,16 @@ public class Reservation
 	private User user;
 	private List<Guest> guests;
 
+	
+	/**
+	 * Constructor using arrival and departure dates only
+	 * @param id the id of the reservation in the database
+	 */
+	public Reservation(int id)
+	{
+		this.id = id;
+	}
+	
 	/**
 	 * Constructor using arrival and departure dates only
 	 * @param checkIn the check-in date of the reservation

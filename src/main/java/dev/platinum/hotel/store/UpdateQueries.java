@@ -49,7 +49,7 @@ public class UpdateQueries extends StoreComponent
 		}
 	}
 
-	public static Voucher createVoucher(int voucherId, Voucher newVoucher)
+	public static Voucher updateVoucher(int voucherId, Voucher newVoucher)
 	{
 		try
 		{

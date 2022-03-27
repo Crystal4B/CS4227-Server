@@ -49,6 +49,7 @@ public class StoreComponent
 	// Voucher table strings
 	protected static final String VOUCHER_TABLE_NAME = "vouchers";
 	protected static final String AMOUNT_COLUMN = "amount";
+	protected static final String RESERVATION_ID_COLUMN = "reservation_id";
 	protected static final String ISSUE_DATE_COLUMN = "issue_date";
 	protected static final String EXPIRY_DATE_COLUMN = "expiry_date";
 
@@ -94,9 +95,8 @@ public class StoreComponent
 				"CREATE TABLE IF NOT EXISTS " + USERS_TABLE_NAME + "(" + ID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT," + TYPE_COLUMN + " TEXT NOT NULL," + EMAIL_COLUMN + " TEXT NOT NULL UNIQUE," + USERNAME_COLUMN + " TEXT NOT NULL," + PASSWORD_COLUMN + " TEXT NOT NULL)"
 			);
 			String voucherTable = (
-				"CREATE TABLE IF NOT EXISTS " + VOUCHER_TABLE_NAME + "(" + ID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT," + TYPE_COLUMN + " TEXT NOT NULL," + AMOUNT_COLUMN + " INT NOT NULL," + ISSUE_DATE_COLUMN + " DATETIME NOT NULL," + EXPIRY_DATE_COLUMN + " DATETIME NOT NULL)"
+				"CREATE TABLE IF NOT EXISTS " + VOUCHER_TABLE_NAME + "(" + ID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT," + TYPE_COLUMN + " TEXT NOT NULL," + AMOUNT_COLUMN + " INT NOT NULL," + USER_ID_COLUMN + " INTEGER NOT NULL REFERENCES users(" + ID_COLUMN + ")," + RESERVATION_ID_COLUMN + " INTEGER REFERENCES reservations(" + ID_COLUMN + ")," + ISSUE_DATE_COLUMN + " DATETIME NOT NULL," + EXPIRY_DATE_COLUMN + " DATETIME NOT NULL)"
 			);
-			// TODO: figure out default admin requirements
 			String insertAdminUser = (
 				"INSERT INTO " + USERS_TABLE_NAME + "(" + TYPE_COLUMN + "," + EMAIL_COLUMN + "," + USERNAME_COLUMN + "," + PASSWORD_COLUMN + ") VALUES ('Staff', 'teamplatinumlimerick@gmail.com', 'Admin', 'password')"
 			);

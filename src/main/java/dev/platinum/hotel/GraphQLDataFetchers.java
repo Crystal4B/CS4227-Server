@@ -2,6 +2,8 @@ package dev.platinum.hotel;
 
 import org.springframework.stereotype.Component;
 
+import dev.platinum.hotel.exceptions.CredentialsException;
+import dev.platinum.hotel.exceptions.UserAlreadyExistsException;
 import dev.platinum.hotel.store.DeleteQueries;
 import dev.platinum.hotel.store.InsertQueries;
 import dev.platinum.hotel.store.SelectQueries;
@@ -88,6 +90,12 @@ public class GraphQLDataFetchers
 			Map<String, Object> data = dataFetchingEnvironment.getArgument("input");
 			String email = (String) data.get("email");
 			String password = (String) data.get("password");
+
+			User user = SelectQueries.selectUserByLogin(new User(email, password));
+			if (user == null)
+			{
+				throw new CredentialsException("The email or password is incorrect");
+			}
 
 			return SelectQueries.selectUserByLogin(new User(email, password));
 		};
@@ -183,14 +191,16 @@ public class GraphQLDataFetchers
 
 			// Validate the email address is available
 			boolean available = SelectQueries.checkEmailAvailablity(email);
-			if (available)
+			if (!available)
 			{
-				String type = (String) data.get("type");
-				String username = (String) data.get("username");
-				String password = (String) data.get("password");
-				return InsertQueries.insertUser(new User(type, email, username, password));
+				throw new UserAlreadyExistsException("A user already exists with this email");
 			}
-			return null;
+
+			// Register User
+			String type = (String) data.get("type");
+			String username = (String) data.get("username");
+			String password = (String) data.get("password");
+			return InsertQueries.insertUser(new User(type, email, username, password));
 		};
 	}
 

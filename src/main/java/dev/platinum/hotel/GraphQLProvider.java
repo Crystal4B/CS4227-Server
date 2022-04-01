@@ -66,6 +66,8 @@ public class GraphQLProvider
 	{
 		return RuntimeWiring.newRuntimeWiring()
 			.type(newTypeWiring("Query")
+				.dataFetcher("validateVoucher", graphQLDataFetchers.validateVoucher()))
+			.type(newTypeWiring("Query")
 				.dataFetcher("reservationById", graphQLDataFetchers.getReservationByIdDataFetcher()))
 			.type(newTypeWiring("Query")
 				.dataFetcher("reservationsByUser", graphQLDataFetchers.getReservationsByUserDataFetcher()))
@@ -95,6 +97,12 @@ public class GraphQLProvider
 				.dataFetcher("createUser", graphQLDataFetchers.createUser()))
 			.type(newTypeWiring("Mutation")
 				.dataFetcher("removeUser", graphQLDataFetchers.removeUser()))
+			.type(newTypeWiring("Mutation")
+				.dataFetcher("createVoucher", graphQLDataFetchers.createVoucher()))
+			.type(newTypeWiring("Mutation")
+				.dataFetcher("removeVoucher", graphQLDataFetchers.removeVoucher()))
+			.type(newTypeWiring("Mutation")
+				.dataFetcher("updateVoucher", graphQLDataFetchers.updateVoucher()))
 			.scalar(GraphQLScalarTypes.createDateScalar())
 			.build();
 	}

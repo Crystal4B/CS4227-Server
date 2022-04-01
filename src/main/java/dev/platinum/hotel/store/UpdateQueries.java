@@ -10,6 +10,8 @@ import java.util.List;
 import dev.platinum.hotel.types.Guest;
 import dev.platinum.hotel.types.Reservation;
 import dev.platinum.hotel.types.User;
+import dev.platinum.hotel.types.Voucher;
+
 
 /**
  * UpdateQueries class handles all update queries for the store
@@ -45,6 +47,24 @@ public class UpdateQueries extends StoreComponent
 		{
 			System.out.println(e);
 		}
+	}
+
+	public static Voucher updateVoucher(int voucherId, Voucher newVoucher)
+	{
+		try
+		{
+			Statement statement = connection.createStatement();
+			String selectVoucher = "UPDATE " + VOUCHER_TABLE_NAME + " SET " + ISSUE_DATE_COLUMN + "= '" + newVoucher.getIssueDate() + "'," + EXPIRY_DATE_COLUMN + "='" + newVoucher.getExpiryDate() + "'," + TYPE_COLUMN + "='" + newVoucher.getType() + "'," + USER_ID_COLUMN + "=" + newVoucher.getCreator().getId() +  "," + RESERVATION_ID_COLUMN + "=" + newVoucher.getAvailability().getId() + " Where " + ID_COLUMN + "=" + voucherId;
+			statement.addBatch(selectVoucher);
+			statement.executeBatch();
+			connection.commit();
+			return newVoucher;
+		}
+		catch (SQLException e)
+		{
+			System.out.println(e);
+		}
+		return null;
 	}
 
 	public static Reservation updateReservationPaid(int id, boolean paid)

@@ -6,11 +6,13 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.Timestamp;
 
 import dev.platinum.hotel.types.Guest;
 import dev.platinum.hotel.types.Reservation;
 import dev.platinum.hotel.types.Room;
 import dev.platinum.hotel.types.User;
+import dev.platinum.hotel.types.Voucher;
 
 /**
  * Store class for hanadling insert queries
@@ -90,6 +92,36 @@ public class InsertQueries extends StoreComponent
 				incomingReservation.setId((int) keys.getLong(1));
 				return incomingReservation;
 			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println(e);
+		}
+		return null;
+	}
+
+	/**
+	 * Function for selecting a Voucher by its id
+	 * @param voucherId the ID of the room
+	 * @return a Voucher object if a voucher was found, null otherwise
+	 */
+	public static Voucher createVoucher(Timestamp issue_d, Timestamp expiry_d, String temp, double num, User creatorUser)
+	{
+		try
+		{
+			Statement statement = connection.createStatement();
+			String selectVoucher = "INSERT INTO " + VOUCHER_TABLE_NAME + "(" + ISSUE_DATE_COLUMN + "," + EXPIRY_DATE_COLUMN + "," + TYPE_COLUMN + "," + AMOUNT_COLUMN + "," + USER_ID_COLUMN + ") VALUES ('" + issue_d + "','" + expiry_d + "','" + temp + "'," + num + "," + creatorUser.getId() + ")";
+			statement.addBatch(selectVoucher);
+			statement.executeBatch();
+			connection.commit();
+			ResultSet keys = statement.getGeneratedKeys();
+			int lastKey = -1;
+			if (keys.next())
+			{
+				lastKey = (int) keys.getLong(1);
+			}
+			Voucher voucherBoi = new Voucher(lastKey, issue_d, expiry_d, temp, num, creatorUser);
+			return voucherBoi;
 		}
 		catch (SQLException e)
 		{

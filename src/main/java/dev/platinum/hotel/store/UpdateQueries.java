@@ -54,7 +54,7 @@ public class UpdateQueries extends StoreComponent
 		try
 		{
 			Statement statement = connection.createStatement();
-			String selectVoucher = "UPDATE " + VOUCHER_TABLE_NAME + " SET " + "=" + voucherId + ISSUE_DATE_COLUMN + "," + EXPIRY_DATE_COLUMN + "," + TYPE_COLUMN + "," + USER_ID_COLUMN +  "," + RESERVATION_ID_COLUMN + ") VALUES ('" + newVoucher.getIssueDate() + "','" + newVoucher.getExpiryDate() + "'," + newVoucher.getType() + "','" + newVoucher.getAmount() + "','" + newVoucher.getCreator() + "','" + newVoucher.getAvailability().getId() +")";
+			String selectVoucher = "UPDATE " + VOUCHER_TABLE_NAME + " SET " + ISSUE_DATE_COLUMN + "= '" + newVoucher.getIssueDate() + "'," + EXPIRY_DATE_COLUMN + "='" + newVoucher.getExpiryDate() + "'," + TYPE_COLUMN + "='" + newVoucher.getType() + "'," + USER_ID_COLUMN + "=" + newVoucher.getCreator().getId() +  "," + RESERVATION_ID_COLUMN + "=" + newVoucher.getAvailability().getId() + " Where " + ID_COLUMN + "=" + voucherId;
 			statement.addBatch(selectVoucher);
 			statement.executeBatch();
 			connection.commit();

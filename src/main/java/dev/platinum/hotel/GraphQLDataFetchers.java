@@ -63,7 +63,7 @@ public class GraphQLDataFetchers
 	public DataFetcher<Voucher> validateVoucher()
 	{
 		return dataFetchingEnvironment -> {
-			int voucherId = dataFetchingEnvironment.getArgument("id");
+			int voucherId = Integer.parseInt(dataFetchingEnvironment.getArgument("id"));
 
 			return SelectQueries.selectVoucherById(voucherId) ;
 		};
@@ -80,8 +80,10 @@ public class GraphQLDataFetchers
 			Timestamp issue_d = (Timestamp) data.get("issue_date");
 			Timestamp expiry_d = (Timestamp) data.get("expiry_date");
 			String type = (String) data.get("type");
-			double amount = Double.parseDouble((String) data.get("amount"));
-			User user =  (User) data.get("creator");
+			double amount = (double) data.get("amount");
+			Map<?,?> userMap =  (Map<?,?>) data.get("creator");
+			String userId = (String) userMap.get("id");
+			User user = new User(Integer.parseInt(userId));
 
 			return InsertQueries.createVoucher(issue_d, expiry_d, type, amount, user) ;
 		};
@@ -94,7 +96,7 @@ public class GraphQLDataFetchers
 	public DataFetcher<Voucher> removeVoucher()
 	{
 		return dataFetchingEnvironment -> {
-			int voucherId = dataFetchingEnvironment.getArgument("id");
+			int voucherId = Integer.parseInt(dataFetchingEnvironment.getArgument("id"));
 
 			return DeleteQueries.removeVoucher(voucherId) ;
 		};
@@ -107,17 +109,35 @@ public class GraphQLDataFetchers
 	public DataFetcher<Voucher> updateVoucher()
 	{
 		return dataFetchingEnvironment -> {
-			int voucherId = dataFetchingEnvironment.getArgument("id");
-			Map<String, Object> data = dataFetchingEnvironment.getArgument("input");
-			Timestamp issue_d = (Timestamp) data.get("issue_date");
-			Timestamp expiry_d = (Timestamp) data.get("expiry_date");
-			String type = (String) data.get("type");
-			double amount = Double.parseDouble((String) data.get("amount"));
-			User user =  (User) data.get("creator");
-			Reservation available = (Reservation) data.get("available");
-			Voucher newVoucher = new Voucher(voucherId, issue_d, expiry_d, type, amount, user, available);
+			int voucherId = Integer.parseInt(dataFetchingEnvironment.getArgument("id"));
+			Map<String, Object> data = dataFetchingEnvironment.getArgument("voucher");
+			Voucher voucher = SelectQueries.selectVoucherById(voucherId);
+			if(data.containsKey("issue_date")){
+				voucher.setIssueDate((Timestamp) data.get("issue_date"));	
+			}
+			if(data.containsKey("expiry_date")){
+				voucher.setExpiryDate((Timestamp) data.get("expiry_date"));
+			}
+			if(data.containsKey("type")){
+				voucher.setType((String) data.get("type"));
+			}
+			if(data.containsKey("amount")){
+				voucher.setAmount((double) data.get("amount"));
+			}
+			if(data.containsKey("creator")){
+				Map<?,?> userMap =  (Map<?,?>) data.get("creator");
+				String userId = (String) userMap.get("id");
+				User user = new User(Integer.parseInt(userId));
+				voucher.setCreator(user);
 
-			return UpdateQueries.updateVoucher(voucherId, newVoucher) ;
+			}
+			if(data.containsKey("available")){
+				Map<?,?> reservationMap =  (Map<?,?>) data.get("available");
+				String reservationId = (String) reservationMap.get("id");
+				Reservation reservation = new Reservation(Integer.parseInt(reservationId));
+				voucher.setAvailability(reservation);
+			}
+			return UpdateQueries.updateVoucher(voucherId, voucher) ;
 		};
 	}
 

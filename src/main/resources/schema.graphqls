@@ -89,7 +89,18 @@ input VoucherCreationInput
 	expiry_date: Date
 	type: String
 	amount: Float
-	creator: User!
+	creator: UserInput!
+}
+
+input VoucherInput
+{
+	id: ID
+	type: String
+	amount: Float
+	issue_date: Date!
+	expiry_date: Date!
+	creator: UserInput
+	available: ReservationInput
 }
 
 type Query
@@ -108,7 +119,7 @@ type Mutation
 {
 	createVoucher(input: VoucherCreationInput): Voucher
 	removeVoucher(id: ID): Voucher
-	updateVoucher(id: ID, voucher: Voucher): Voucher
+	updateVoucher(id: ID, voucher: VoucherInput): Voucher
 	createReservation(input: ReservationInput): Reservation
 	updateReservationPaid(input: ReservationInput): Reservation
 	removeReservation(input: ReservationInput): Reservation

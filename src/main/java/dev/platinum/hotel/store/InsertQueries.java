@@ -110,7 +110,7 @@ public class InsertQueries extends StoreComponent
 		try
 		{
 			Statement statement = connection.createStatement();
-			String selectVoucher = "INSERT INTO " + VOUCHER_TABLE_NAME + "(" + ISSUE_DATE_COLUMN + "," + EXPIRY_DATE_COLUMN + "," + TYPE_COLUMN + "," + USER_ID_COLUMN + ") VALUES ('" + issue_d + "','" + expiry_d + "'," + temp + "','" + num + "','" + creatorUser + ")";
+			String selectVoucher = "INSERT INTO " + VOUCHER_TABLE_NAME + "(" + ISSUE_DATE_COLUMN + "," + EXPIRY_DATE_COLUMN + "," + TYPE_COLUMN + "," + AMOUNT_COLUMN + "," + USER_ID_COLUMN + ") VALUES ('" + issue_d + "','" + expiry_d + "','" + temp + "'," + num + "," + creatorUser.getId() + ")";
 			statement.addBatch(selectVoucher);
 			statement.executeBatch();
 			connection.commit();

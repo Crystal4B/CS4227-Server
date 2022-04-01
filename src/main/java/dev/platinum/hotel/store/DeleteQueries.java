@@ -61,7 +61,7 @@ public class DeleteQueries extends StoreComponent
 		try
 		{
 			Statement statement = connection.createStatement();
-			String deleteVoucher = "DELETE FROM " + VOUCHER_TABLE_NAME + " WHERE " + ID_COLUMN + "=" + "'" + voucherId + "'" + ") RETURNING *";
+			String deleteVoucher = "DELETE FROM " + VOUCHER_TABLE_NAME + " WHERE " + ID_COLUMN + "=" + "'" + voucherId + "'" + " RETURNING *";
 			ResultSet results = statement.executeQuery(deleteVoucher);
 			if (results.next())
 			{
@@ -72,10 +72,7 @@ public class DeleteQueries extends StoreComponent
 				Timestamp expiry_date = results.getTimestamp(EXPIRY_DATE_COLUMN) ;
 				
 				int userId = results.getInt(USER_ID_COLUMN);
-				String typeU = results.getString(TYPE_COLUMN);
-				String email = results.getString(EMAIL_COLUMN);
-				String username = results.getString(USERNAME_COLUMN);
-				User creator = new User(userId, typeU, email, username);
+				User creator = 	SelectQueries.selectUserById(userId);
 
 				int reservationId = results.getInt(RESERVATION_ID_COLUMN);
 

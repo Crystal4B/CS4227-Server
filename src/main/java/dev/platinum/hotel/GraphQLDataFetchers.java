@@ -16,6 +16,7 @@ import dev.platinum.hotel.types.Voucher;
 import graphql.schema.DataFetcher;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -77,8 +78,8 @@ public class GraphQLDataFetchers
 	{
 		return dataFetchingEnvironment -> {
 			Map<String, Object> data = dataFetchingEnvironment.getArgument("input");
-			Timestamp issue_d = (Timestamp) data.get("issue_date");
-			Timestamp expiry_d = (Timestamp) data.get("expiry_date");
+			Timestamp issue_d = Timestamp.valueOf(LocalDateTime.now());
+			Timestamp expiry_d = Timestamp.valueOf(issue_d.toLocalDateTime().plusMonths(2));
 			String type = (String) data.get("type");
 			double amount = (double) data.get("amount");
 			Map<?,?> userMap =  (Map<?,?>) data.get("creator");

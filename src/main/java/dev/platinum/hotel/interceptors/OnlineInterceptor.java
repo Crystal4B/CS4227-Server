@@ -10,7 +10,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 
 @RestController
-public class onlineInterceptor {
+public class OnlineInterceptor {
 	@GetMapping("/graphql")
 	public String fromClasspathAsResEntity() throws IOException //All requests to the /graphql endpoint will go through Interceptor methods first.
 	{

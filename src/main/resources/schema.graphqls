@@ -42,8 +42,8 @@ type Voucher
 	id: ID
 	type: String
 	amount: Float
-	issue_date: Date!
-	expiry_date: Date!
+	issue_date: Date
+	expiry_date: Date
 	creator: User
 	available: Reservation
 }
@@ -99,8 +99,8 @@ input VoucherInput
 	id: ID
 	type: String
 	amount: Float
-	issue_date: Date!
-	expiry_date: Date!
+	issue_date: Date
+	expiry_date: Date
 	creator: UserInput
 	available: ReservationInput
 }

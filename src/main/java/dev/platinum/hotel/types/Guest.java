@@ -20,6 +20,12 @@ public class Guest
 		this.id = id;
 	}
 
+	/**
+	 * Simple constructor for Guest with an id, firstname and lastname
+	 * @param id of the guest
+	 * @param firstName of the guest
+	 * @param lastName of the guest
+	 */
 	public Guest(int id, String firstName, String lastName)
 	{
 		this.id = id;

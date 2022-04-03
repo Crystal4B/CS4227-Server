@@ -268,6 +268,10 @@ public class GraphQLDataFetchers
 		};
 	}
 
+	/**
+	 * The DataFetcher handling reservationPaid requests
+	 * @return the complete reservation after its update
+	 */
 	public DataFetcher<Reservation> updateReservationPaid()
 	{
 		return dataFetchingEnvironment -> {

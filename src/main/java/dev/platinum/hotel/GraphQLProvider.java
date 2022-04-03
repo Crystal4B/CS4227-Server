@@ -59,7 +59,7 @@ public class GraphQLProvider
 	}
 
 	/**
-	 * Function for creating the Graph wiring of the schema
+	 * Function for creating the Graph wiring of the schema this includes setting resolvers and scalar types
 	 * @return the built wiring for the schema
 	 */
 	private RuntimeWiring buildWiring()

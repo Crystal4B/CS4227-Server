@@ -2,6 +2,8 @@ package dev.platinum.hotel;
 
 import org.springframework.stereotype.Component;
 
+import dev.platinum.hotel.exceptions.CredentialsException;
+import dev.platinum.hotel.exceptions.UserAlreadyExistsException;
 import dev.platinum.hotel.store.DeleteQueries;
 import dev.platinum.hotel.store.InsertQueries;
 import dev.platinum.hotel.store.SelectQueries;
@@ -10,6 +12,7 @@ import dev.platinum.hotel.types.Guest;
 import dev.platinum.hotel.types.Reservation;
 import dev.platinum.hotel.types.Room;
 import dev.platinum.hotel.types.User;
+import dev.platinum.hotel.types.Voucher;
 import graphql.schema.DataFetcher;
 
 import java.sql.Timestamp;
@@ -54,6 +57,91 @@ public class GraphQLDataFetchers
 	}
 
 	/**
+	 * The DataFetcher handling validateVoucher requests
+	 * @return and validates Voucher visible to the user
+	 */
+	public DataFetcher<Voucher> validateVoucher()
+	{
+		return dataFetchingEnvironment -> {
+			int voucherId = Integer.parseInt(dataFetchingEnvironment.getArgument("id"));
+
+			return SelectQueries.selectVoucherById(voucherId) ;
+		};
+	}
+
+	/**
+	 * The DataFetcher handling createVoucher requests
+	 * @return the created Voucher visible to the user
+	 */
+	public DataFetcher<Voucher> createVoucher()
+	{
+		return dataFetchingEnvironment -> {
+			Map<String, Object> data = dataFetchingEnvironment.getArgument("input");
+			Timestamp issue_d = (Timestamp) data.get("issue_date");
+			Timestamp expiry_d = (Timestamp) data.get("expiry_date");
+			String type = (String) data.get("type");
+			double amount = (double) data.get("amount");
+			Map<?,?> userMap =  (Map<?,?>) data.get("creator");
+			String userId = (String) userMap.get("id");
+			User user = new User(Integer.parseInt(userId));
+
+			return InsertQueries.createVoucher(issue_d, expiry_d, type, amount, user) ;
+		};
+	}
+
+	/**
+	 * The DataFetcher handling removeVoucher requests
+	 * @return the deleted of Voucher visible to the user
+	 */
+	public DataFetcher<Voucher> removeVoucher()
+	{
+		return dataFetchingEnvironment -> {
+			int voucherId = Integer.parseInt(dataFetchingEnvironment.getArgument("id"));
+
+			return DeleteQueries.removeVoucher(voucherId) ;
+		};
+	}
+
+	/**
+	 * The DataFetcher handling updateVoucher requests
+	 * @return the updated Voucher visible to the user
+	 */
+	public DataFetcher<Voucher> updateVoucher()
+	{
+		return dataFetchingEnvironment -> {
+			int voucherId = Integer.parseInt(dataFetchingEnvironment.getArgument("id"));
+			Map<String, Object> data = dataFetchingEnvironment.getArgument("voucher");
+			Voucher voucher = SelectQueries.selectVoucherById(voucherId);
+			if(data.containsKey("issue_date")){
+				voucher.setIssueDate((Timestamp) data.get("issue_date"));	
+			}
+			if(data.containsKey("expiry_date")){
+				voucher.setExpiryDate((Timestamp) data.get("expiry_date"));
+			}
+			if(data.containsKey("type")){
+				voucher.setType((String) data.get("type"));
+			}
+			if(data.containsKey("amount")){
+				voucher.setAmount((double) data.get("amount"));
+			}
+			if(data.containsKey("creator")){
+				Map<?,?> userMap =  (Map<?,?>) data.get("creator");
+				String userId = (String) userMap.get("id");
+				User user = new User(Integer.parseInt(userId));
+				voucher.setCreator(user);
+
+			}
+			if(data.containsKey("available")){
+				Map<?,?> reservationMap =  (Map<?,?>) data.get("available");
+				String reservationId = (String) reservationMap.get("id");
+				Reservation reservation = new Reservation(Integer.parseInt(reservationId));
+				voucher.setAvailability(reservation);
+			}
+			return UpdateQueries.updateVoucher(voucherId, voucher) ;
+		};
+	}
+
+	/**
 	 * The DataFetcher handling RoomById requests
 	 * @return a Room Object or null if not found
 	 */
@@ -88,6 +176,12 @@ public class GraphQLDataFetchers
 			Map<String, Object> data = dataFetchingEnvironment.getArgument("input");
 			String email = (String) data.get("email");
 			String password = (String) data.get("password");
+
+			User user = SelectQueries.selectUserByLogin(new User(email, password));
+			if (user == null)
+			{
+				throw new CredentialsException("The email or password is incorrect");
+			}
 
 			return SelectQueries.selectUserByLogin(new User(email, password));
 		};
@@ -183,14 +277,16 @@ public class GraphQLDataFetchers
 
 			// Validate the email address is available
 			boolean available = SelectQueries.checkEmailAvailablity(email);
-			if (available)
+			if (!available)
 			{
-				String type = (String) data.get("type");
-				String username = (String) data.get("username");
-				String password = (String) data.get("password");
-				return InsertQueries.insertUser(new User(type, email, username, password));
+				throw new UserAlreadyExistsException("A user already exists with this email");
 			}
-			return null;
+
+			// Register User
+			String type = (String) data.get("type");
+			String username = (String) data.get("username");
+			String password = (String) data.get("password");
+			return InsertQueries.insertUser(new User(type, email, username, password));
 		};
 	}
 

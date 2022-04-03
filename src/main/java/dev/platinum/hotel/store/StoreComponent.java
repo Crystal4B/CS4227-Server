@@ -18,6 +18,7 @@ public class StoreComponent
 	// Common strings
 	protected static final String ID_COLUMN = "id";
 	protected static final String TYPE_COLUMN = "type";
+	protected static final String USER_ID_COLUMN = "user_id";
 
 	// Room table strings
 	protected static final String ROOMS_TABLE_NAME = "rooms";
@@ -36,7 +37,6 @@ public class StoreComponent
 	protected static final String RESERVATIONS_TABLE_NAME = "reservations";
 	protected static final String CHECK_IN_COLUMN = "check_in";
 	protected static final String CHECK_OUT_COLUMN = "check_out";
-	protected static final String USER_ID_COLUMN = "user_id";
 	protected static final String GUEST_IDS_COLUMN = "guest_ids";
 	protected static final String PAID_COLUMN = "paid";
 	
@@ -95,7 +95,7 @@ public class StoreComponent
 				"CREATE TABLE IF NOT EXISTS " + USERS_TABLE_NAME + "(" + ID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT," + TYPE_COLUMN + " TEXT NOT NULL," + EMAIL_COLUMN + " TEXT NOT NULL UNIQUE," + USERNAME_COLUMN + " TEXT NOT NULL," + PASSWORD_COLUMN + " TEXT NOT NULL)"
 			);
 			String voucherTable = (
-				"CREATE TABLE IF NOT EXISTS " + VOUCHER_TABLE_NAME + "(" + ID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT," + TYPE_COLUMN + " TEXT NOT NULL," + AMOUNT_COLUMN + " INT NOT NULL," + USER_ID_COLUMN + " INTEGER NOT NULL REFERENCES users(" + ID_COLUMN + ")," + RESERVATION_ID_COLUMN + " INTEGER REFERENCES reservations(" + ID_COLUMN + ")," + ISSUE_DATE_COLUMN + " DATETIME NOT NULL," + EXPIRY_DATE_COLUMN + " DATETIME NOT NULL)"
+				"CREATE TABLE IF NOT EXISTS " + VOUCHER_TABLE_NAME + "(" + ID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT," + TYPE_COLUMN + " TEXT NOT NULL," + AMOUNT_COLUMN + " REAL NOT NULL," + USER_ID_COLUMN + " INTEGER NOT NULL REFERENCES users(" + ID_COLUMN + ")," + RESERVATION_ID_COLUMN + " INTEGER REFERENCES reservations(" + ID_COLUMN + ")," + ISSUE_DATE_COLUMN + " DATETIME NOT NULL," + EXPIRY_DATE_COLUMN + " DATETIME NOT NULL)"
 			);
 			String insertAdminUser = (
 				"INSERT INTO " + USERS_TABLE_NAME + "(" + TYPE_COLUMN + "," + EMAIL_COLUMN + "," + USERNAME_COLUMN + "," + PASSWORD_COLUMN + ") VALUES ('Staff', 'teamplatinumlimerick@gmail.com', 'Admin', 'password')"

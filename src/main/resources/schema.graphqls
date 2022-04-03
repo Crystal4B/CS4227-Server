@@ -40,9 +40,11 @@ type Voucher
 {
 	id: ID
 	type: String
-	amount: Int
+	amount: Float
 	issue_date: Date!
 	expiry_date: Date!
+	creator: User
+	available: Reservation
 }
 
 input UserInput
@@ -81,8 +83,29 @@ input RoomInput
 	rate: Int
 }
 
+input VoucherCreationInput
+{
+	issue_date: Date
+	expiry_date: Date
+	type: String
+	amount: Float
+	creator: UserInput!
+}
+
+input VoucherInput
+{
+	id: ID
+	type: String
+	amount: Float
+	issue_date: Date!
+	expiry_date: Date!
+	creator: UserInput
+	available: ReservationInput
+}
+
 type Query
 {
+	validateVoucher(id: ID!): Voucher
 	reservationById(id: ID!): Reservation
 	reservationsByUser(input: UserInput!): [Reservation]
 	allRooms: [Room]
@@ -94,6 +117,9 @@ type Query
 
 type Mutation
 {
+	createVoucher(input: VoucherCreationInput): Voucher
+	removeVoucher(id: ID): Voucher
+	updateVoucher(id: ID, voucher: VoucherInput): Voucher
 	createReservation(input: ReservationInput): Reservation
 	updateReservationPaid(input: ReservationInput): Reservation
 	removeReservation(input: ReservationInput): Reservation

@@ -56,6 +56,11 @@ public class DeleteQueries extends StoreComponent
 		return null;
 	}
 
+	/**
+	 * Function for removing a voucher from the system
+	 * @param voucherId the voucher id of the voucher being removed from the system
+	 * @return the removed voucher object, or null if unsuccessful
+	 */
 	public static Voucher removeVoucher(int voucherId)
 	{
 		try

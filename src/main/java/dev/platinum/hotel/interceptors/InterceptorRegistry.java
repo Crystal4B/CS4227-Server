@@ -9,7 +9,6 @@ public class InterceptorRegistry implements WebMvcConfigurer {
 
 	@Override
 	public void addInterceptors(org.springframework.web.servlet.config.annotation.InterceptorRegistry registry) {
-		registry.addInterceptor(new IdAuthenticationInterceptor());
-		//registry.addInterceptor(new LoggerInterceptor());
+		registry.addInterceptor(new LoggerInterceptor());
 	}
 }

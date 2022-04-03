@@ -49,6 +49,12 @@ public class UpdateQueries extends StoreComponent
 		}
 	}
 
+	/**
+	 * Update function for changing a voucher status
+	 * @param voucherid of the voucher being updated
+	 * @param newVoucher the new voucher to replace the old voucher
+	 * @return A complete voucher object for graphQL parsing
+	 */
 	public static Voucher updateVoucher(int voucherId, Voucher newVoucher)
 	{
 		try

@@ -67,6 +67,12 @@ public class UpdateQueries extends StoreComponent
 		return null;
 	}
 
+	/**
+	 * Update function for changing a reservations paid status
+	 * @param id of the reservation being updated
+	 * @param paid the new status
+	 * @return A complete reservation object for graphQL parsing
+	 */
 	public static Reservation updateReservationPaid(int id, boolean paid)
 	{
 		String updateReservationPaid = "Update " + RESERVATIONS_TABLE_NAME + " SET " + PAID_COLUMN + " = " + paid + " WHERE " + ID_COLUMN + "=" + id + " RETURNING *";

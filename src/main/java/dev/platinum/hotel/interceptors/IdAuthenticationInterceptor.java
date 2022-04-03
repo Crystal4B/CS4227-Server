@@ -20,8 +20,6 @@ public class IdAuthenticationInterceptor implements HandlerInterceptor {
 				+ "]" + request.getRequestURI() + getParameters(request));
 		*/
 
-		System.out.println(request.getParameterMap().keySet());
-
 		return true;
 	}
 

@@ -112,5 +112,44 @@ public class UpdateQueries extends StoreComponent
 
 		return null;
 	}
+
+	/**
+	 * Update function for user passwords
+	 * @param id of the user being updated
+	 * @param newPassword for the user
+	 * @return complete user after update
+	 */
+	public static User updateUserPassword(int id, String newPassword)
+	{
+		String updateUserPassword = "Update " + USERS_TABLE_NAME + " SET " + PASSWORD_COLUMN + " = '" + newPassword + "' WHERE " + ID_COLUMN + " = " + id + " RETURNING *";
+		try
+		{
+			Statement statement = connection.createStatement();
+			ResultSet results = statement.executeQuery(updateUserPassword);
+
+			User user = null;
+			if (results.next())
+			{
+				String type = results.getString(TYPE_COLUMN);
+				String username = results.getString(USERNAME_COLUMN);
+				String email = results.getString(EMAIL_COLUMN);
+				String password = results.getString(PASSWORD_COLUMN);
+
+				user = new User(id, type, email, username);
+				user.setPassword(password);
+				
+			}
+			results.close();
+			connection.commit();
+
+			return user;
+		}
+		catch(SQLException e)
+		{
+			System.out.println(e);
+		}
+
+		return null;
+	}
 	
 }

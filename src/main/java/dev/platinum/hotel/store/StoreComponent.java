@@ -45,6 +45,7 @@ public class StoreComponent
 	protected static final String EMAIL_COLUMN = "email";
 	protected static final String USERNAME_COLUMN = "username";
 	protected static final String PASSWORD_COLUMN = "password";
+	protected static final String DEFAULT_PASSWORD_COLUMN = "default_password";
 
 	// Voucher table strings
 	protected static final String VOUCHER_TABLE_NAME = "vouchers";
@@ -92,13 +93,13 @@ public class StoreComponent
 				"CREATE TABLE IF NOT EXISTS " + RESERVATIONS_TABLE_NAME + "(" + ID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT," + CHECK_IN_COLUMN + " DATETIME NOT NULL," + CHECK_OUT_COLUMN + " DATETIME NOT NULL," + USER_ID_COLUMN+ " INTEGER NOT NULL," + GUEST_IDS_COLUMN + " TEXT NOT NULL," + PAID_COLUMN + " INT DEFAULT FALSE, FOREIGN KEY(" + USER_ID_COLUMN + ") REFERENCES users(" + ID_COLUMN + "))"
 			); // guest_ids as text in format "id,id,id"
 			String userTable = (
-				"CREATE TABLE IF NOT EXISTS " + USERS_TABLE_NAME + "(" + ID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT," + TYPE_COLUMN + " TEXT NOT NULL," + EMAIL_COLUMN + " TEXT NOT NULL UNIQUE," + USERNAME_COLUMN + " TEXT NOT NULL," + PASSWORD_COLUMN + " TEXT NOT NULL)"
+				"CREATE TABLE IF NOT EXISTS " + USERS_TABLE_NAME + "(" + ID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT," + TYPE_COLUMN + " TEXT NOT NULL," + EMAIL_COLUMN + " TEXT NOT NULL UNIQUE," + USERNAME_COLUMN + " TEXT NOT NULL," + PASSWORD_COLUMN + " TEXT NOT NULL," + DEFAULT_PASSWORD_COLUMN + " INT)"
 			);
 			String voucherTable = (
 				"CREATE TABLE IF NOT EXISTS " + VOUCHER_TABLE_NAME + "(" + ID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT," + TYPE_COLUMN + " TEXT NOT NULL," + AMOUNT_COLUMN + " REAL NOT NULL," + USER_ID_COLUMN + " INTEGER NOT NULL REFERENCES users(" + ID_COLUMN + ")," + RESERVATION_ID_COLUMN + " INTEGER REFERENCES reservations(" + ID_COLUMN + ")," + ISSUE_DATE_COLUMN + " DATETIME NOT NULL," + EXPIRY_DATE_COLUMN + " DATETIME NOT NULL)"
 			);
 			String insertAdminUser = (
-				"INSERT INTO " + USERS_TABLE_NAME + "(" + TYPE_COLUMN + "," + EMAIL_COLUMN + "," + USERNAME_COLUMN + "," + PASSWORD_COLUMN + ") VALUES ('Staff', 'teamplatinumlimerick@gmail.com', 'Admin', 'password')"
+				"INSERT INTO " + USERS_TABLE_NAME + "(" + TYPE_COLUMN + "," + EMAIL_COLUMN + "," + USERNAME_COLUMN + "," + PASSWORD_COLUMN + "," + DEFAULT_PASSWORD_COLUMN + ") VALUES ('Staff', 'teamplatinumlimerick@gmail.com', 'Admin', 'password', true)"
 			);
 
 			statement.addBatch(roomTable);

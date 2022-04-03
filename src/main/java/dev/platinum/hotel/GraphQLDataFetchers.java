@@ -379,4 +379,19 @@ public class GraphQLDataFetchers
 			return UpdateQueries.updateReservationPaid(id, paid);
 		};
 	}
+
+	/**
+	 * The DataFetcher handling changeUserPassword requests
+	 * @return the compelete user after its update
+	 */
+	public DataFetcher<User> changeUserPassword()
+	{
+		return dataFetchingEnvironment -> {
+			Map<String, Object> data = dataFetchingEnvironment.getArgument("input");
+			int id = Integer.parseInt((String) data.get("id"));
+			String newPassword = (String) data.get("password");
+
+			return UpdateQueries.updateUserPassword(id, newPassword);
+		};
+	}
 }

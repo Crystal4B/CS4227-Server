@@ -11,6 +11,7 @@ public class User
 	private String email;
 	private String username;
 	private String password;
+	private boolean defaultPassword;
 
 	/**
 	 * Constructor using only id
@@ -141,6 +142,15 @@ public class User
 	}
 
 	/**
+	 * Simple defaultPassword getter
+	 * @return defaultPassword status of the user as boolean
+	 */
+	public boolean getDefaultPassword()
+	{
+		return this.defaultPassword;
+	}
+
+	/**
 	 * Simple id setter
 	 * @param newId desired id for the user
 	 */
@@ -183,5 +193,14 @@ public class User
 	public void setPassword(String newPassword)
 	{
 		this.password = newPassword;
+	}
+
+	/**
+	 * Simple defaultPassword setter
+	 * @param newDefault new defaultPassword status for the user
+	 */
+	public void setDefaultPassword(boolean newDefault)
+	{
+		this.defaultPassword = newDefault;
 	}
 }

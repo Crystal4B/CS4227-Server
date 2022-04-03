@@ -96,6 +96,8 @@ public class GraphQLProvider
 			.type(newTypeWiring("Mutation")
 				.dataFetcher("createUser", graphQLDataFetchers.createUser()))
 			.type(newTypeWiring("Mutation")
+				.dataFetcher("changeUserPassword", graphQLDataFetchers.changeUserPassword()))
+			.type(newTypeWiring("Mutation")
 				.dataFetcher("removeUser", graphQLDataFetchers.removeUser()))
 			.type(newTypeWiring("Mutation")
 				.dataFetcher("createVoucher", graphQLDataFetchers.createVoucher()))

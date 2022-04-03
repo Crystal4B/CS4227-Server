@@ -398,7 +398,7 @@ public class SelectQueries extends StoreComponent
 	{
 		try
 		{
-			String selectUser = "SELECT " + ID_COLUMN + "," + TYPE_COLUMN + "," + USERNAME_COLUMN + " FROM " + USERS_TABLE_NAME + " WHERE " + EMAIL_COLUMN + " = '" + user.getEmail() + "' AND " + PASSWORD_COLUMN + " = '" + user.getPassword() + "'";
+			String selectUser = "SELECT " + ID_COLUMN + "," + TYPE_COLUMN + "," + USERNAME_COLUMN + "," + DEFAULT_PASSWORD_COLUMN + " FROM " + USERS_TABLE_NAME + " WHERE " + EMAIL_COLUMN + " = '" + user.getEmail() + "' AND " + PASSWORD_COLUMN + " = '" + user.getPassword() + "'";
 
 			Statement statement = connection.createStatement();
 			ResultSet results = statement.executeQuery(selectUser);
@@ -407,10 +407,12 @@ public class SelectQueries extends StoreComponent
 				int id = results.getInt(ID_COLUMN);
 				String type = results.getString(TYPE_COLUMN);
 				String username = results.getString(USERNAME_COLUMN);
+				boolean defaultPassword = results.getBoolean(DEFAULT_PASSWORD_COLUMN);
 
 				user.setId(id);
 				user.setType(type);
 				user.setUsername(username);
+				user.setDefaultPassword(defaultPassword);
 				
 				return user;
 			}

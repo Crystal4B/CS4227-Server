@@ -7,6 +7,7 @@ type User
 	email: String
 	username: String
 	password: String
+	defaultPassword: Boolean
 }
 
 type Guest
@@ -54,6 +55,7 @@ input UserInput
 	email: String
 	username: String
 	password: String
+	defaultPassword: Boolean
 }
 
 input GuestInput
@@ -112,7 +114,6 @@ type Query
 	roomById(id: ID!): Room
 	availableRoomsByDates(checkIn: Date!, checkOut: Date!): [Room]
 	loginUser(input: UserInput): User
-
 }
 
 type Mutation
@@ -128,5 +129,6 @@ type Mutation
 	removeRoom(input: RoomInput): Room
 	removeRooms(input: [RoomInput]): [Room]
 	createUser(input: UserInput): User
+	changeUserPassword(input: UserInput): User
 	removeUser(input: UserInput): User
 }

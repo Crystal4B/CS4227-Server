@@ -341,7 +341,7 @@ public class SelectQueries extends StoreComponent
 
 	public static List<User> selectStaffUsers()
 	{
-		String selectStaffUsers = "SELECT * FROM " + USERS_TABLE_NAME + " WHERE " + TYPE_COLUMN + " = Staff";
+		String selectStaffUsers = "SELECT * FROM " + USERS_TABLE_NAME + " WHERE " + TYPE_COLUMN + " = 'Staff'";
 		try
 		{
 			Statement statement = connection.createStatement();

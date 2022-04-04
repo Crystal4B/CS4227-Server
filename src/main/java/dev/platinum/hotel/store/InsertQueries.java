@@ -228,7 +228,7 @@ public class InsertQueries extends StoreComponent
 	{
 		try
 		{
-			String insertUser = "INSERT INTO " + USERS_TABLE_NAME + "(" + TYPE_COLUMN + "," + EMAIL_COLUMN + "," + USERNAME_COLUMN + "," + PASSWORD_COLUMN + ") VALUES('" + user.getType() + "', '" + user.getEmail() + "', '" + user.getUsername() + "', '" + user.getPassword() + "')";
+			String insertUser = "INSERT INTO " + USERS_TABLE_NAME + "(" + TYPE_COLUMN + "," + EMAIL_COLUMN + "," + USERNAME_COLUMN + "," + PASSWORD_COLUMN + "," + DEFAULT_PASSWORD_COLUMN + ") VALUES('" + user.getType() + "', '" + user.getEmail() + "', '" + user.getUsername() + "', '" + user.getPassword() + "'," + user.getDefaultPassword() + ")";
 
 			Statement statement = connection.createStatement();
 			statement.execute(insertUser);

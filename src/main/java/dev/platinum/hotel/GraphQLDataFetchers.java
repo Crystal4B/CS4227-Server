@@ -298,7 +298,12 @@ public class GraphQLDataFetchers
 			String type = (String) data.get("type");
 			String username = (String) data.get("username");
 			String password = (String) data.get("password");
-			return InsertQueries.insertUser(new User(type, email, username, password));
+			boolean defaultPassword = (boolean) data.get("defaultPassword");
+			User user = new User(type, email, username, password);
+			user.setDefaultPassword(defaultPassword);
+
+
+			return InsertQueries.insertUser(user);
 		};
 	}
 

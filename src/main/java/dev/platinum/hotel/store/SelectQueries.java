@@ -339,6 +339,32 @@ public class SelectQueries extends StoreComponent
 		return null;
 	}
 
+	public static List<User> selectStaffUsers()
+	{
+		String selectStaffUsers = "SELECT * FROM " + USERS_TABLE_NAME + " WHERE " + TYPE_COLUMN + " = Staff";
+		try
+		{
+			Statement statement = connection.createStatement();
+			ResultSet results = statement.executeQuery(selectStaffUsers);
+
+			List<User> staffMembers = new ArrayList<>();
+			while (results.next())
+			{
+				int id = results.getInt(ID_COLUMN);
+				String username = results.getString(USERNAME_COLUMN);
+				String email = results.getString(EMAIL_COLUMN);
+
+				staffMembers.add(new User(id, "Staff", username, email));
+			}
+			return staffMembers;
+		}
+		catch (SQLException e)
+		{
+			System.out.println(e);
+		}
+		return null;
+	}
+
 	/**
 	 * Function for selecting guests by their ids
 	 * @param ids the list of guest ids

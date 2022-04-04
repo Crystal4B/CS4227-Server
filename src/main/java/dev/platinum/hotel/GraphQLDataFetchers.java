@@ -189,6 +189,17 @@ public class GraphQLDataFetchers
 	}
 
 	/**
+	 * The DataFtcher handling allStaffMembers requests
+	 * @return list of users who are employees of the hotel
+	 */
+	public DataFetcher<List<User>> getAllStaffMembers()
+	{
+		return dataFetchingEnvironment -> {
+			return SelectQueries.selectStaffUsers();
+		};
+	}
+
+	/**
 	 * The DataFetcher handling createReservations requests
 	 * @return the inserted Reservation Object or null if unsuccessful
 	 */

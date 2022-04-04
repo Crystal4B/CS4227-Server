@@ -79,6 +79,8 @@ public class GraphQLProvider
 				.dataFetcher("availableRoomsByDates", graphQLDataFetchers.getAvailableRoomsByDatesDataFetcher()))
 			.type(newTypeWiring("Query")
 				.dataFetcher("loginUser", graphQLDataFetchers.loginUserDataFetcher()))
+			.type(newTypeWiring("Query")
+				.dataFetcher("allStaffUsers", graphQLDataFetchers.getAllStaffMembers()))
 			.type(newTypeWiring("Mutation")
 				.dataFetcher("createReservation", graphQLDataFetchers.createReservation()))
 			.type(newTypeWiring("Mutation")

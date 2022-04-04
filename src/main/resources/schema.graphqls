@@ -114,6 +114,7 @@ type Query
 	roomById(id: ID!): Room
 	availableRoomsByDates(checkIn: Date!, checkOut: Date!): [Room]
 	loginUser(input: UserInput): User
+	allStaffUsers: [User]
 }
 
 type Mutation

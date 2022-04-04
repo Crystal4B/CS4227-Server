@@ -339,6 +339,10 @@ public class SelectQueries extends StoreComponent
 		return null;
 	}
 
+	/**
+	 * Select query function for getting all users of type staff
+	 * @return list of staff users in the hotel
+	 */
 	public static List<User> selectStaffUsers()
 	{
 		String selectStaffUsers = "SELECT * FROM " + USERS_TABLE_NAME + " WHERE " + TYPE_COLUMN + " = 'Staff'";

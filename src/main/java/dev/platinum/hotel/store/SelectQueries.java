@@ -358,7 +358,7 @@ public class SelectQueries extends StoreComponent
 				String username = results.getString(USERNAME_COLUMN);
 				String email = results.getString(EMAIL_COLUMN);
 
-				staffMembers.add(new User(id, "Staff", username, email));
+				staffMembers.add(new User(id, "Staff", email, username));
 			}
 			return staffMembers;
 		}

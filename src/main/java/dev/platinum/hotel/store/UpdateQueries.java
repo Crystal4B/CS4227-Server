@@ -127,7 +127,7 @@ public class UpdateQueries extends StoreComponent
 	 */
 	public static User updateUserPassword(int id, String newPassword)
 	{
-		String updateUserPassword = "Update " + USERS_TABLE_NAME + " SET " + PASSWORD_COLUMN + " = '" + newPassword + "' WHERE " + ID_COLUMN + " = " + id + " RETURNING *";
+		String updateUserPassword = "Update " + USERS_TABLE_NAME + " SET " + PASSWORD_COLUMN + " = '" + newPassword + "'," + DEFAULT_PASSWORD_COLUMN + " = " + false + " WHERE " + ID_COLUMN + " = " + id + " RETURNING *";
 		try
 		{
 			Statement statement = connection.createStatement();

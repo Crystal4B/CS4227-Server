@@ -1,7 +1,7 @@
 package dev.platinum.hotel.types;
 
 /**
- * The Guest class for parsing and dispatching guest queries & mutations
+ * The Guest class for parsing and dispatching guest queries and mutations
  * @author Marcin Sęk
  */
 public class Guest

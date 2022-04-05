@@ -1,7 +1,7 @@
 package dev.platinum.hotel.types;
 
 /**
- * The Room class for parsing and dispatching room queries & mutations
+ * The Room class for parsing and dispatching room queries and mutations
  * @author Marcin Sęk
  */
 public class Room

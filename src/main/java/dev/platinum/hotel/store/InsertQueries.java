@@ -101,8 +101,12 @@ public class InsertQueries extends StoreComponent
 	}
 
 	/**
-	 * Function for selecting a Voucher by its id
-	 * @param voucherId the ID of the room
+	 * Function for creating a Voucher 
+	 * @param issue_d Issue date of voucher
+	 * @param expiry_d Expiry date of voucher
+	 * @param temp Type of voucher
+	 * @param num Amount of voucher discount
+	 * @param creatorUser Creator of voucher
 	 * @return a Voucher object if a voucher was found, null otherwise
 	 */
 	public static Voucher createVoucher(Timestamp issue_d, Timestamp expiry_d, String temp, double num, User creatorUser)

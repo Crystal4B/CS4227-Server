@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 /**
- * The Reservation class for parsing and dispatching reservation queries & mutations
+ * The Reservation class for parsing and dispatching reservation queries and mutations
  * @author Marcin Sęk
  */
 public class Reservation

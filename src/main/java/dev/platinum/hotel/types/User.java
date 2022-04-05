@@ -1,7 +1,7 @@
 package dev.platinum.hotel.types;
 
 /**
- * The User class for parsing and dispatching user queries & mutations
+ * The User class for parsing and dispatching user queries and mutations
  * @author Marcin Sęk
  */
 public class User

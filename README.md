@@ -18,9 +18,9 @@ Hotel reservation system is a Java project designed to show effective and effici
 
 ## Deploying Application
 The application can be ran in two main ways:
-1. By running the application as an executable by using the `gradlew bootRun` command in the terminal within the project directory. This command makes gradle install the project and execute it.
+1. By running the application as an executable by using the `gradlew bootRun` command in the terminal within the project directory. This command makes gradle install the project and execute it. Note that sometimes there might be permission issues on `gradlew` if these issues are encountered simply use `chmod +x gradlew` or alternative for your operating system
 2. By running the application as a service. A great guide to achieve this can be found [here](https://docs.spring.io/spring-boot/docs/current/reference/html/deployment.html#deployment.installing), but to summerise this can be achieved on unix based systems by doing the following:
-	- Executing `gradlew bootJar` to compile an executable jar file in the `CS4227-Client/server/build/libs directory`
+	- Executing `gradlew bootJar` to compile an executable jar file in the `CS4227-Server/build/libs directory`
 	- Create a script named `{name}.service` and place it in `/etc/systemd/system` directory following example below
 	```
 	[Unit]

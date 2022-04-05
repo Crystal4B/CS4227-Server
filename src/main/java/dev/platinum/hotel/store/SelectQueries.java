@@ -387,6 +387,8 @@ public class SelectQueries extends StoreComponent
 		}
 		selectRoomsByGuests += ")";
 
+		System.out.println(selectRoomsByGuests);
+
 		try
 		{
 			Statement statement = connection.createStatement();
@@ -540,12 +542,19 @@ public class SelectQueries extends StoreComponent
 			List<Guest> resultList = new ArrayList<>();
 			while (results.next())
 			{
-				int id = results.getInt(ID_COLUMN);
 				String firstName = results.getString(FIRST_NAME_COLUMN);
 				String lastName = results.getString(LAST_NAME_COLUMN);
-				int roomId = results.getInt(ROOM_ID_COLUMN);
-
-				resultList.add(new Guest(id, firstName, lastName, new Room(roomId)));
+				int id = results.getInt(ID_COLUMN);
+				
+				for (Guest guest : guests)
+				{
+					if (guest.getFirstName().equals(firstName) && guest.getLastName().equals(lastName))
+					{
+						guest.setId(id);
+						resultList.add(guest);
+						break;
+					}
+				}
 			}
 
 			return resultList;

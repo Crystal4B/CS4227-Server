@@ -2,6 +2,10 @@ package dev.platinum.hotel.types;
 
 import java.sql.Timestamp;
 
+/**
+ * The Voucher class for parsing and dispatching voucher queries and mutations
+ * @author Aleksandr Jakusevs
+ */
 public class Voucher {
     private int id;
 	private String type;

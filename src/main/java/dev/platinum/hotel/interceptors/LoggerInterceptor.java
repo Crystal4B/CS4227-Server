@@ -10,6 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Enumeration;
 
+/**
+ * LoggerInterceptor for logging requests
+ * @author Jakub Pažej
+ */
 @Component
 public class LoggerInterceptor implements HandlerInterceptor {
 	Logger log = LoggerFactory.getLogger(LoggerInterceptor.class);
@@ -34,6 +38,11 @@ public class LoggerInterceptor implements HandlerInterceptor {
 		//System.out.print("afterCompletion");
 	}
 
+	/**
+	 * Function for retrieving parameters from a request
+	 * @param request being parsed
+	 * @return parameters of request as string
+	 */
 	private String getParameters(HttpServletRequest request) {
 		StringBuffer posted = new StringBuffer();
 		Enumeration<?> e = request.getParameterNames();

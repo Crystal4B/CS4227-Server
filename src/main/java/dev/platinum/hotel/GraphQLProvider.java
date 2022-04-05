@@ -27,12 +27,20 @@ public class GraphQLProvider
 {
 	private GraphQL graphQL;
 
+	/**
+	 * Bean for setting up graphQL
+	 * @return GraphQL service
+	 */
 	@Bean
 	public GraphQL graphQL()
 	{
 		return graphQL;
 	}
 
+	/**
+	 * PostConstruct for initialzing graphQL
+	 * @throws IOException error while finding the graphql schema in Resources
+	 */
 	@PostConstruct
 	public void init() throws IOException
 	{

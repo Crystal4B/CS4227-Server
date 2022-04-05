@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class StoreComponent
 {
-	// Common strings
+	// Common table strings
 	protected static final String ID_COLUMN = "id";
 	protected static final String TYPE_COLUMN = "type";
 	protected static final String USER_ID_COLUMN = "user_id";

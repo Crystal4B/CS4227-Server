@@ -7,8 +7,16 @@ import graphql.ErrorType;
 import graphql.GraphQLError;
 import graphql.language.SourceLocation;
 
+/**
+ * UserAlreadyExists exception to tell the client that a registration isn't possible
+ * @author Marcin Sęk
+ */
 public class UserAlreadyExistsException extends RuntimeException implements GraphQLError
 {
+	/**
+	 * Simple constructor for the Exception
+	 * @param message being sent to the client
+	 */
 	public UserAlreadyExistsException(String message)
 	{
 		super(message);

@@ -18,9 +18,9 @@ Hotel reservation system is a Java project designed to show effective and effici
 
 ## Deploying Application
 The application can be ran in two main ways:
-1. By running the application as an executable by using the `gradlew bootRun` command in the terminal within the project directory. This command makes gradle install the project and execute it.
+1. By running the application as an executable by using the `gradlew bootRun` command in the terminal within the project directory. This command makes gradle install the project and execute it. Note that sometimes there might be permission issues on `gradlew` if these issues are encountered simply use `chmod +x gradlew` or alternative for your operating system
 2. By running the application as a service. A great guide to achieve this can be found [here](https://docs.spring.io/spring-boot/docs/current/reference/html/deployment.html#deployment.installing), but to summerise this can be achieved on unix based systems by doing the following:
-	- Executing `gradlew bootJar` to compile an executable jar file in the `CS4227-Client/server/build/libs directory`
+	- Executing `gradlew bootJar` to compile an executable jar file in the `CS4227-Server/build/libs directory`
 	- Create a script named `{name}.service` and place it in `/etc/systemd/system` directory following example below
 	```
 	[Unit]
@@ -38,6 +38,7 @@ The application can be ran in two main ways:
 	WantedBy=multi-user.target
 	```
 	- After the above service script is created the application can be started on the system using `systemctl start {name}.service` and can be registered to start automatically on system boot using `systemctl enable {name}.service`
+	- If the service is no longer desired the application can be shutdown using `systemctl stop {name}.service` and removed from the registration by using the following commands `systemctl disable {name}.service`
 
 ## API
 For the setup of the API two major frameworks were used. SpringBoot was used for the creation and managment of the webserver using Java. As well as GraphQL was chosen to support request handling using the `/graphql` endpoint to host all the data and services available in the application.

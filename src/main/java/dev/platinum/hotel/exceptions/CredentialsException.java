@@ -9,8 +9,16 @@ import graphql.ErrorType;
 import graphql.GraphQLError;
 import graphql.language.SourceLocation;
 
+/**
+ * CredentialsException for notifying the client that the credentials are incorrect
+ * @author Marcin Sęk
+ */
 public class CredentialsException extends CredentialException implements GraphQLError
 {
+	/**
+	 * Simple constructor for exception
+	 * @param message being sent to the client
+	 */
 	public CredentialsException(String message)
 	{
 		super(message);

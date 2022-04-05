@@ -387,8 +387,6 @@ public class SelectQueries extends StoreComponent
 		}
 		selectRoomsByGuests += ")";
 
-		System.out.println(selectRoomsByGuests);
-
 		try
 		{
 			Statement statement = connection.createStatement();

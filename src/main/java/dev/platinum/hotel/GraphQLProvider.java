@@ -36,7 +36,7 @@ public class GraphQLProvider
 	@PostConstruct
 	public void init() throws IOException
 	{
-		URL url = Resources.getResource("schema.graphqls");
+		URL url = Resources.getResource("schema.graphql");
 		String sdl = Resources.toString(url, Charset.defaultCharset());
 		GraphQLSchema graphQLSchema = buildSchema(sdl);
 		this.graphQL = GraphQL.newGraphQL(graphQLSchema).build();

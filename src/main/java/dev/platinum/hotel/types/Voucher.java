@@ -44,7 +44,7 @@ public class Voucher {
 
     /**
 	 * Constructor using arrivalDate, departureDate and rooms
-     * @param num the id of the voucher in the database
+     * @param id the id of the voucher in the database
 	 * @param iss_date the issue date of the voucher in the database
      * @param exp_date the expiry date of the voucher in the database
 	 * @param temp the type of the voucher in the database
@@ -63,7 +63,7 @@ public class Voucher {
 
     /**
 	 * Constructor using arrivalDate, departureDate and rooms
-     * @param num the id of the voucher in the database
+     * @param id the id of the voucher in the database
 	 * @param iss_date the issue date of the voucher in the database
      * @param exp_date the expiry date of the voucher in the database
 	 * @param temp the type of the voucher in the database

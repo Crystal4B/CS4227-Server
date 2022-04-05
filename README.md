@@ -38,6 +38,7 @@ The application can be ran in two main ways:
 	WantedBy=multi-user.target
 	```
 	- After the above service script is created the application can be started on the system using `systemctl start {name}.service` and can be registered to start automatically on system boot using `systemctl enable {name}.service`
+	- If the service is no longer desired the application can be shutdown using `systemctl stop {name}.service` and removed from the registration by using the following commands `systemctl disable {name}.service`
 
 ## API
 For the setup of the API two major frameworks were used. SpringBoot was used for the creation and managment of the webserver using Java. As well as GraphQL was chosen to support request handling using the `/graphql` endpoint to host all the data and services available in the application.
